@@ -16,6 +16,7 @@ class ChatConsumer( WebsocketConsumer ):
         # ・connect()でaccept()を呼び出さないと、接続は拒否されて閉じられます。
         # 　たとえば、要求しているユーザーが要求されたアクションを実行する権限を持っていないために、接続を拒否したい場合があります。
         # 　接続を受け入れる場合は、connect()の最後のアクションとしてaccept()を呼び出します。
+        
         self.accept()
 
     # WebSocket切断時の処理
@@ -26,6 +27,7 @@ class ChatConsumer( WebsocketConsumer ):
     # WebSocketからのデータ受信時の処理
     # （ブラウザ側のJavaScript関数のsocketChat.send()の結果、WebSocketを介してデータがChatConsumerに送信され、本関数で受信処理します）
     def receive( self, text_data ):
+        
         # 受信データをJSONデータに復元
         text_data_json = json.loads( text_data )
 
