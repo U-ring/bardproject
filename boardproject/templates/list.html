@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<div class="alert alert-primary" role="alert">
+    <h3>マッチングBoard</h3>
+</div>
+{% endblock header %}
+
+{% block content %}
+<div class="container">
+<a href="{% url 'machinglist' %}" class="btn btn-primary active" role="button" area-pressed="true">マッチングリストへ</a>
+<a href="{% url 'profileEdit' %}" class="btn btn-primary active" role="button" area-pressed="true">プロフィール更新画面へ</a>
+{% for item in object_list %}
+<div class="alert alert-success" role="alert">
+    <!--<p>ユーザー名:<a href="{% url 'detail' item.pk %}">{{ item.title }}</a></p>-->
+    <p>ユーザー名:{{ item.username }}</p>
+    <p>年齢:{{ item.get_age }}</p>
+    
+    <a href="{% url 'like' item.pk %}" class="btn btn-primary active" role="button" area-pressed="true">like</a>
+    <a href="#" class="btn btn-secondary active" role="button" area-pressed="true">nope</a>
+</div>
+{% endfor %}
+<a href="{% url 'logout' %}">logout</a>
+</div>
+{% endblock content %}
