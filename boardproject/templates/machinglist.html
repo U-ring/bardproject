@@ -11,6 +11,7 @@
 {% for item in machingList %}
 <div class="alert alert-success" role="alert">
     <!--<p>ユーザー名:<a href="{% url 'detail' item.pk %}">{{ item.title }}</a></p>-->
+    <span><img src="{{ item.profile.image }}"></span>
     <p>ユーザー名:{{ item.username }}</p>
     <p>年齢:{{ item.get_age }}</p>
     

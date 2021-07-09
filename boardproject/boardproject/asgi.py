@@ -16,16 +16,16 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'boardproject.settings')
 #application = get_asgi_application()
 django_asgi_app = get_asgi_application()
 
-from channels.routing import ProtocolTypeRouter, URLRouter
+# from channels.routing import ProtocolTypeRouter, URLRouter
 # from channels.routing import URLRouter
-from channels.auth import AuthMiddlewareStack
-import boardapp.routing
+# from channels.auth import AuthMiddlewareStack
+# import boardapp.routing
 # import boardproject.routing
 
 application = ProtocolTypeRouter( {
-    # 'http': django_asgi_app,
-    'http': get_asgi_application(),
-    'websocket': AuthMiddlewareStack( URLRouter( boardapp.routing.websocket_urlpatterns ) )
+    'http': django_asgi_app,
+    # 'http': get_asgi_application(),
+    # 'websocket': AuthMiddlewareStack( URLRouter( boardapp.routing.websocket_urlpatterns ) )
     # 'websocket': AuthMiddlewareStack( URLRouter( boardproject.routing.websocket_urlpatterns ) )
 } )
 

@@ -102,5 +102,3 @@ def profileEditfunc(request):
             
     return render(request, 'profileEdit.html', {'profile':profile})
 
-def chat( request ):
-    return render( request, 'chat.html' )
