@@ -103,4 +103,5 @@ def profileEditfunc(request):
     return render(request, 'profileEdit.html', {'profile':profile})
 
 def chat( request ):
+    print("通ったよ")
     return render( request, 'chat.html' )
