@@ -1,0 +1,57 @@
+  
+{% extends 'base.html' %}
+
+{% block header %}
+<div class="alert alert-primary" role="alert">
+    <h3>プロフィール編集</h3>
+</div>
+{% endblock header %}
+
+{% block content %}
+<div class="container">
+    {% if edited is not none %}
+    <p>yeah</p>
+    {% endif %}
+    <form method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <p>
+            <label>
+                <span><img src="/medi/{{ profile.image }}"></span>
+                <input type="file" name="image1" style="display: none;">
+            </label>
+        </p>
+        <p>
+            <label>
+                <span><img src="/medi/{{ profile.image2 }}"></span>
+                <input type="file" name="image2" style="display: none;">
+            </label>
+        </p>
+        <p>
+            <label>
+                <span><img src="/medi/{{ profile.image3 }}"></span>
+                <input type="file" name="image3" style="display: none;">
+            </label>
+        </p>
+        <p>
+            <label>
+                <span><img src="/medi/{{ profile.image4 }}"></span>
+                <input type="file" name="image4" style="display: none;">
+            </label>
+        </p>
+        <p>
+            <label>
+                <span><img src="/medi/{{ profile.image5 }}"></span>
+                <input type="file" name="image5" style="display: none;">
+            </label>
+        </p>
+        <input type="file" name="image">
+        <!--<p>ユーザー名<input type="text" name="name" placeholder="{{ user.get_username }}"></p>-->
+        ユーザー名：{{ user.get_username }}
+        <p>プロフィール文<input type="text" name="text" placeholder="{{ profile.introduction_text }}"></p>
+        <!--<p><input type="file" name="snsimage"></p>-->
+        
+        <input type="submit" value="profileEdit">
+    </form>
+<a href="{% url 'logout' %}">logout</a>
+
+</div>
+{% endblock content %}

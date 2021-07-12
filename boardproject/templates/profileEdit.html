@@ -15,9 +15,10 @@
         <p>
             <label>
                 <span><img src="{{ profile.image }}"></span>
-                <input type="file" name="image" style="display: none;">
+                <input type="file" name="image1" style="display: none;">
             </label>
         </p>
+        <input type="file" name="image">
         <p>ユーザー名<input type="text" name="name" placeholder="{{ user.get_username }}"></p>
         <p>プロフィール文<input type="text" name="text" placeholder="{{ profile.introduction_text }}"></p>
         <!--<p><input type="file" name="snsimage"></p>-->

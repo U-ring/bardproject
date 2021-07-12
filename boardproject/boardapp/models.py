@@ -19,6 +19,10 @@ class BoardModel(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='')
+    image2 = models.ImageField(upload_to='')
+    image3 = models.ImageField(upload_to='')
+    image4 = models.ImageField(upload_to='')
+    image5 = models.ImageField(upload_to='')
     gender = models.CharField(max_length=20, blank=True)
     birth_date = models.DateField(null=True, blank=True)    
     age = models.IntegerField(null=True, blank=True, default=1)    
@@ -42,3 +46,7 @@ def save_user_profile(sender, instance, **kwargs):
 class Likes(models.Model):
     user_id = models.IntegerField()
     liked_user_id = models.IntegerField()
+
+class Nopes(models.Model):
+    user_id = models.IntegerField()
+    noped_user_id = models.IntegerField()
