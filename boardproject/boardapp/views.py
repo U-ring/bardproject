@@ -28,8 +28,10 @@ def loginfunc(request):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
+
         if user is not None:
             login(request, user)
+            print(user.get_username)
             return redirect('list')
         else:
             return render(request, 'login.html', {})
@@ -38,6 +40,9 @@ def loginfunc(request):
 def listfunc(request):    
     likeUsers = Likes.objects.filter(user_id=request.user.id)
     nopeUsers = Nopes.objects.filter(user_id=request.user.id)
+    
+    for like in likeUsers:
+        print(like.user_id)
     object_list = []
     allUsers = User.objects.all()
 
@@ -48,6 +53,8 @@ def listfunc(request):
             for nopeUser in nopeUsers:
                 if not Nopes.objects.filter(noped_user_id=user.id).exists() and nopeUser.noped_user_id != line.id:
                     object_list.append(user)
+
+    # object_list = User.objects.all()
 
     return render(request, 'list.html', {'object_list':object_list})
 
@@ -77,6 +84,7 @@ class BoardCreate(CreateView):
 def likefunc(request, pk):
     #object = BoardModel.objects.get_object_or_404(BoardModel, pk=pk)
     like = Likes(user_id=request.user.id, liked_user_id=pk)
+    print(request.user.id)
     #object.good += 1
     # object.user_id = request.user.id
     # object.liked_user_id = pk
@@ -85,7 +93,7 @@ def likefunc(request, pk):
 
 def nopefunc(request, pk):
     #object = BoardModel.objects.get_object_or_404(BoardModel, pk=pk)
-    nope = Nopes(user_id=request.user.id, liked_user_id=pk)
+    nope = Nopes(user_id=request.user.id, noped_user_id=pk)
     #object.good += 1
     # object.user_id = request.user.id
     # object.liked_user_id = pk
