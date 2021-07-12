@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import authenticate, login, logout
-from .models import BoardModel, Likes, Profile
+from django.views.generic.edit import UpdateView
+from .models import BoardModel, Likes, Nopes,Profile
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
@@ -34,9 +35,20 @@ def loginfunc(request):
             return render(request, 'login.html', {})
     return render(request, 'login.html', {})
 @login_required
-def listfunc(request):
-    object_list = User.objects.all()
-    
+def listfunc(request):    
+    likeUsers = Likes.objects.filter(user_id=request.user.id)
+    nopeUsers = Nopes.objects.filter(user_id=request.user.id)
+    object_list = []
+    allUsers = User.objects.all()
+
+    for user in allUsers:
+        if not Likes.objects.filter(liked_user_id=user.id).exists():
+            object_list.append(user)
+        for line in object_list:
+            for nopeUser in nopeUsers:
+                if not Nopes.objects.filter(noped_user_id=user.id).exists() and nopeUser.noped_user_id != line.id:
+                    object_list.append(user)
+
     return render(request, 'list.html', {'object_list':object_list})
 
 def logoutfunc(request):
@@ -71,6 +83,15 @@ def likefunc(request, pk):
     like.save()
     return redirect('list')
 
+def nopefunc(request, pk):
+    #object = BoardModel.objects.get_object_or_404(BoardModel, pk=pk)
+    nope = Nopes(user_id=request.user.id, liked_user_id=pk)
+    #object.good += 1
+    # object.user_id = request.user.id
+    # object.liked_user_id = pk
+    nope.save()
+    return redirect('list')
+
 #ここから
 def machinglistfunc(request):    
     likeUser = Likes.objects.filter(user_id=request.user.id)
@@ -90,10 +111,10 @@ def profileEditfunc(request):
         user = request.user
         if request.POST.get('name').strip() == "":
             return redirect('profileEdit')
-        else:
+        else:            
             user.username = request.POST.get('name')
-            print(request.POST.get('image'))
-            profile.image = request.POST.get('image')
+            print(request.FILES.get('image'))
+            profile.image = request.FILES.get('image')
             profile.introduction_text = request.POST.get('text')
             user.save()
             profile.save()
@@ -101,4 +122,10 @@ def profileEditfunc(request):
             return render(request,'profileEdit.html', {'edited':edited, 'profile':profile})
             
     return render(request, 'profileEdit.html', {'profile':profile})
+
+class profileUpdate(UpdateView):
+    template_name = 'updateProfile.html'
+    model = Profile
+    fields = ('image','image2','image3','image4','image5','introduction_text')
+    success_url = reverse_lazy('list')
 

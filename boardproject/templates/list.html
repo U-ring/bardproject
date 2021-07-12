@@ -22,7 +22,8 @@
             <a href="{% url 'machinglist' %}" class="nav-link active">マッチングリストへ</a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'profileEdit' %}" class="nav-link active">プロフィール更新画面へ</a>
+            <!--<a href="{% url 'profileEdit' %}" class="nav-link active">プロフィール更新画面へ</a>-->
+            <a href="{% url 'update' request.user.pk%}" class="nav-link active">プロフィール更新画面へ</a>
           </li>
           <li class="nav-item">
             <a class="nav-link active" href="{% url 'logout' %}">logout</a>
@@ -47,7 +48,7 @@
     <div width="25%" class="my-auto mx-1">
         <div class="my-auto" style="width: 60px; height: 60px;">
             <div class="rounded-circle shadow-lg p-1">
-                <img src="{{ item.profile.image }}" width="50" height="50" class="rounded-circle">
+                <img src="/medi/{{item.profile.image}}" width="50" height="50" class="rounded-circle">
             </div>
         </div>
     </div>
@@ -66,7 +67,7 @@
     <div class="d-flex justify-content-around">
         <a href="{% url 'like' item.pk %}" role="button" area-pressed="true"><i class="far fa-grin-hearts like fa-3x"></i></i></a>
         <a href="{% url 'like' item.pk %}" role="button" area-pressed="true"><i class="fas fa-comments chat fa-3x"></i></a>
-        <a href="{% url 'like' item.pk %}" role="button" area-pressed="true"><i class="far fa-grin-beam-sweat nope fa-3x"></i></a>
+        <a href="{% url 'nope' item.pk %}" role="button" area-pressed="true"><i class="far fa-grin-beam-sweat nope fa-3x"></i></a>
     </div>
     
 </div>
