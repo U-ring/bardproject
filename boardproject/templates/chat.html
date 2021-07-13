@@ -84,9 +84,9 @@
                 <form action="" onsubmit="onsubmitButton_JoinChat(); return false;"
                     style="text-align: center; width: 100%;">
                     User name<br />
-                    <input type="text" id="input_username" placeholder="Enter User name" autofocus><br /><br />
+                    <input type="text" id="input_username" placeholder="Enter User name" value="{{username}}" autofocus><br /><br />
                     Room name - optional<br />
-                    <input type="text" id="input_roomname" placeholder="Enter Room name"><br />
+                    <input type="text" id="input_roomname" placeholder="Enter Room name" value="{{room}}"><br />
                     Room name must be a string containing only ASCII alphanumerics, hyphens, or periods.<br /><br />
                     <input type="submit" value="Join Chat" />
                 </form>

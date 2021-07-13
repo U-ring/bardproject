@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
+{% block customcss %}
+<link href="{% static 'list.css' %}" rel="stylesheet">
+{% endblock customcss %}
+
 {% block header %}
 <div class="alert alert-primary" role="alert">
     <h3>マッチングBoard</h3>
@@ -23,7 +29,13 @@
         <h4 class="my-auto px-4">{{ item.username }}</h4>
         <h5 class="my-auto">24歳</h5>        
         <div class="col-8"></div>
-        <a href="{% url 'like' item.pk %}" role="button" area-pressed="true"><i class="fas fa-comments chat fa-3x"></i></a>
+        <!-- <a href="{% url 'chat' %}" role="button" area-pressed="true"><i class="fas fa-comments chat fa-3x"></i></a> -->
+        <form action="{% url 'chat' %}" method="post">{% csrf_token %}
+            <input type="hidden" name="talkTo" value="kaneko">
+            <button type="submit" class="rounded-circle shadow-sm p-2" style="border: none; outline: none">
+                <i class="fas fa-comments chat fa-3x shadow rounded-circle p-2"></i>
+            </button>
+        </form>       
     </div>
       
       <!-- Modal -->
@@ -99,7 +111,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a href="{% url 'like' item.pk %}" role="button" area-pressed="true"><i class="fas fa-comments chat fa-3x"></i></a>
+                <a href="{% url 'chat' %}" role="button" area-pressed="true"><i class="fas fa-comments chat fa-3x"></i></a>
             </div>
           </div>
         </div>
