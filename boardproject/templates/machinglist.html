@@ -9,15 +9,104 @@
 {% block content %}
 <div class="container">
 {% for item in machingList %}
-<div class="alert alert-success" role="alert">
+<br>
+<div class="shadow-lg rounded-pill p-4">
     <!--<p>ユーザー名:<a href="{% url 'detail' item.pk %}">{{ item.title }}</a></p>-->
-    <p>ユーザー名:{{ item.username }}</p>
-    <p>年齢:{{ item.get_age }}</p>
-    
-    <a href="{% url 'like' item.pk %}" class="btn btn-primary active" role="button" area-pressed="true">この人と話す</a>
-    
+    <div class="d-flex justify-content-start">
+        <div width="25%" class="my-auto mx-1">
+            <div class="my-auto" style="width: 60px; height: 60px;">
+                <div class="rounded-circle shadow-lg p-1">         
+                    <img src="/medi/{{ item.profile.image }}" data-bs-toggle="modal" data-bs-target="#exampleModal" width="50" height="50" class="rounded-circle">
+                </div>
+            </div>
+        </div>
+        <h4 class="my-auto px-4">{{ item.username }}</h4>
+        <h5 class="my-auto">24歳</h5>        
+        <div class="col-8"></div>
+        <a href="{% url 'like' item.pk %}" role="button" area-pressed="true"><i class="fas fa-comments chat fa-3x"></i></a>
+    </div>
+      
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <!-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> -->
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                    <ol class="carousel-indicators">
+                        <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></li>
+                        <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></li>
+                        <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></li>
+                        <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3"></li>
+                    </ol>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <label class="w-100">
+                                <span class="w-100">
+                                    <img class="d-block mx-auto rounded shadow-lg" src="/medi/{{ item.profile.image2 }}"
+                                        style="height: 250px; width: 500px;">
+                                </span>
+                                <br><br>
+                            </label>
+                        </div>
+                        <div class="carousel-item">
+                            <label class="w-100">
+                                <span class="w-100">
+                                    <img class="d-block mx-auto rounded shadow" src="/medi/{{ item.profile.image3 }}"
+                                        style="height: 250px; width: 500px;">
+                                </span>
+                                <br><br>
+                            </label>
+                        </div>
+                        <div class="carousel-item">
+                            <label class="w-100">
+                                <span class="w-100">
+                                    <img class="d-block mx-auto rounded shadow" src="/medi/{{ item.profile.image4 }}"
+                                        style="height: 250px; width: 500px;">
+                                </span>
+                                <br><br>
+                            </label>
+                        </div>
+                        <div class="carousel-item">
+                            <label class="w-100">
+                                <span class="w-100">
+                                    <img class="d-block mx-auto rounded shadow" src="/medi/{{ item.profile.image5 }}"
+                                        style="height: 250px; width: 500px;">
+                                </span>
+                                <br><br>
+                            </label>
+                        </div>
+                    </div>
+                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon shadow-lg rounded-circle p-1" style="background-color: #d0d0d0;"
+                            aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+                        <span class="carousel-control-next-icon shadow-lg rounded-circle p-1" style="background-color: #d0d0d0;"
+                            aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </a>
+                </div>
+                <br>
+                <div class="mb-3">
+
+                    <br><br>
+                    <h3>{{ item.profile.introduction_text }}</h3>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="{% url 'like' item.pk %}" role="button" area-pressed="true"><i class="fas fa-comments chat fa-3x"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
 </div>
+<br>
 {% endfor %}
-<a href="{% url 'logout' %}">logout</a>
+
 </div>
 {% endblock content %}

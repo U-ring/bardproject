@@ -3,76 +3,81 @@
 {% load static %}
 
 {% block customcss %}
-<link href="{% static 'list.css' %}" rel="stylesheet"> 
+<link href="{% static 'list.css' %}" rel="stylesheet">
 {% endblock customcss %}
 
-{% block header %}
-<nav class="navbar navbar-expand-lg navbar-light shadow-lg">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'machinglist' %}" class="nav-link active">マッチングリストへ</a>
-          </li>
-          <li class="nav-item">
-            <!--<a href="{% url 'profileEdit' %}" class="nav-link active">プロフィール更新画面へ</a>-->
-            <a href="{% url 'update' request.user.pk%}" class="nav-link active">プロフィール更新画面へ</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="{% url 'logout' %}">logout</a>
-          </li>
-        </ul>
-        <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
-      </div>
-    </div>
-  </nav>
-{% endblock header %}
 
 {% block content %}
-<div class="container">
+
 {% for item in object_list %}
 <br>
-<div class="shadow-lg rounded-pill p-4" role="alert">
-    <div class="d-flex flex-row">
-    <!--<p>ユーザー名:<a href="{% url 'detail' item.pk %}">{{ item.title }}</a></p>-->
-    <div width="25%" class="my-auto mx-1">
-        <div class="my-auto" style="width: 60px; height: 60px;">
-            <div class="rounded-circle shadow-lg p-1">
-                <img src="/medi/{{item.profile.image}}" width="50" height="50" class="rounded-circle">
-            </div>
+<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></li>
+        <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></li>
+        <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></li>
+        <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3"></li>
+    </ol>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <label class="w-100">
+                <span class="w-100">
+                    <img class="d-block mx-auto rounded shadow-lg" src="/medi/{{ item.profile.image2 }}"
+                        style="height: 500px; width: 1000px;">
+                </span>
+                <br><br>
+            </label>
+        </div>
+        <div class="carousel-item">
+            <label class="w-100">
+                <span class="w-100">
+                    <img class="d-block mx-auto rounded shadow" src="/medi/{{ item.profile.image3 }}"
+                        style="height: 500px; width: 1000px;">
+                </span>
+                <br><br>
+            </label>
+        </div>
+        <div class="carousel-item">
+            <label class="w-100">
+                <span class="w-100">
+                    <img class="d-block mx-auto rounded shadow" src="/medi/{{ item.profile.image4 }}"
+                        style="height: 500px; width: 1000px;">
+                </span>
+                <br><br>
+            </label>
+        </div>
+        <div class="carousel-item">
+            <label class="w-100">
+                <span class="w-100">
+                    <img class="d-block mx-auto rounded shadow" src="/medi/{{ item.profile.image5 }}"
+                        style="height: 500px; width: 1000px;">
+                </span>
+                <br><br>
+            </label>
         </div>
     </div>
-    
-<div class="col-1"></div>
-<div>
-    {{ item.username }}
-    <p>年齢:{{ item.get_age }}</p>
+    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon shadow-lg rounded-circle p-1" style="background-color: #d0d0d0;"
+            aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+        <span class="carousel-control-next-icon shadow-lg rounded-circle p-1" style="background-color: #d0d0d0;"
+            aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </a>
 </div>
-</div>
-    <!--<i class="fab fa-gratipay fa-3x"></i>-->
-    <!--<a href="{% url 'like' item.pk %}" class="btn btn-primary active" role="button" area-pressed="true">like</a>-->
-    <div class="row">
-        {{ item.introduction_text }}
-    </div>
-    <div class="d-flex justify-content-around">
-        <a href="{% url 'like' item.pk %}" role="button" area-pressed="true"><i class="far fa-grin-hearts like fa-3x"></i></i></a>
-        <a href="{% url 'like' item.pk %}" role="button" area-pressed="true"><i class="fas fa-comments chat fa-3x"></i></a>
-        <a href="{% url 'nope' item.pk %}" role="button" area-pressed="true"><i class="far fa-grin-beam-sweat nope fa-3x"></i></a>
-    </div>
+<br>
+<div class="mb-3">
+  <div class="d-flex justify-content-around">        
+    <a href="{% url 'nope' item.pk %}" role="button" area-pressed="true"><i class="far fa-grin-beam-sweat nope fa-3x"></i></a>
+    <h1>{{ item.username }}</h1>
+    <a href="{% url 'like' item.pk %}" role="button" area-pressed="true"><i class="far fa-grin-hearts like fa-3x"></i></i></a>
+  </div>
     
+    <br><br>
+    <h3>{{ item.profile.introduction_text }}</h3>
 </div>
 <br>
 {% endfor %}
-
-</div>
 {% endblock content %}

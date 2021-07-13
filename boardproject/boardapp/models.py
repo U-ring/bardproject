@@ -17,7 +17,7 @@ class BoardModel(models.Model):
     readtext = models.TextField(null=True, blank=True, default='a')
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
     image = models.ImageField(upload_to='')
     image2 = models.ImageField(upload_to='')
     image3 = models.ImageField(upload_to='')

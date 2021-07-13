@@ -46,13 +46,12 @@ def listfunc(request):
     object_list = []
     allUsers = User.objects.all()
 
+    print(Likes.objects.filter(user_id=1, liked_user_id=3).exists())
+
     for user in allUsers:
-        if not Likes.objects.filter(liked_user_id=user.id).exists():
+        if not Likes.objects.filter(user_id=request.user.id, liked_user_id=user.id).exists() and not Nopes.objects.filter(user_id=request.user.id ,noped_user_id=user.id).exists() and user.id != request.user.id:
             object_list.append(user)
-        for line in object_list:
-            for nopeUser in nopeUsers:
-                if not Nopes.objects.filter(noped_user_id=user.id).exists() and nopeUser.noped_user_id != line.id:
-                    object_list.append(user)
+            break
 
     # object_list = User.objects.all()
 
@@ -111,6 +110,11 @@ def machinglistfunc(request):
             if item.liked_user_id == item2.user_id:
                 # machingList = User.objects.get(pk=item.liked_user_id)
                 machingList.append(User.objects.get(pk=item.liked_user_id))
+                # for li in machingList:
+                #     print("userのidは")
+                #     print(li.id)
+                #     print("profileのuser_idは")
+                #     print(li.profile.user_id)
     return render(request, 'machinglist.html', {'machingList':machingList})
 
 def profileEditfunc(request):
