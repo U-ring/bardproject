@@ -18,7 +18,8 @@
 <br>
 <div class="shadow-lg rounded-pill p-4">
     <!--<p>ユーザー名:<a href="{% url 'detail' item.pk %}">{{ item.title }}</a></p>-->
-    <div class="d-flex justify-content-start">
+    <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-start">
         <div width="25%" class="my-auto mx-1">
             <div class="my-auto" style="width: 60px; height: 60px;">
                 <div class="rounded-circle shadow-lg p-1">         
@@ -26,16 +27,24 @@
                 </div>
             </div>
         </div>
-        <h4 class="my-auto px-4">{{ item.username }}</h4>
-        <h5 class="my-auto">24歳</h5>        
-        <div class="col-8"></div>
+        <h4 class="my-auto px-2">{{ item.username }}</h4>
         <!-- <a href="{% url 'chat' %}" role="button" area-pressed="true"><i class="fas fa-comments chat fa-3x"></i></a> -->
-        <form action="{% url 'chat' %}" method="post">{% csrf_token %}
-            <input type="hidden" name="talkTo" value="kaneko">
+        </div>
+        <div class="d-flex flex-row-reverse">
+        <form action="{% url 'chat' %}" method="post" class="px-2">{% csrf_token %}
+            <input type="hidden" name="talkTo" value="{{item.username}}">
+            <input type="hidden" name="talkToId" value="{{item.pk}}">
             <button type="submit" class="rounded-circle shadow-sm p-2" style="border: none; outline: none">
-                <i class="fas fa-comments chat fa-3x shadow rounded-circle p-2"></i>
+                <i class="fas fa-comments chat fa-2x shadow rounded-circle p-2"></i>
             </button>
-        </form>       
+        </form>
+        <form action="{% url 'deleteMaching' %}" method="post">{% csrf_token %}
+            <input type="hidden" name="machingUserId" value="{{item.id}}">
+            <button type="submit" class="rounded-circle shadow-sm p-2" style="border: none; outline: none">
+                <i class="fas fa-user-minus fa-2x shadow rounded-circle p-2"></i>
+            </button>
+        </form>
+        </div>
     </div>
       
       <!-- Modal -->
