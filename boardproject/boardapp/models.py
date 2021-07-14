@@ -17,7 +17,7 @@ class BoardModel(models.Model):
     readtext = models.TextField(null=True, blank=True, default='a')
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
     image = models.ImageField(upload_to='')
     image2 = models.ImageField(upload_to='')
     image3 = models.ImageField(upload_to='')
@@ -29,15 +29,16 @@ class Profile(models.Model):
     location = models.CharField(max_length=30, blank=True)
     introduction_text = models.CharField(max_length=500, blank=True)
 
-    #ここから
-    def get_age(self):
-        age= datetime.date.today()-self.birth_date
-        return int((age).days/365.25)
-
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+        instance.profile.image = 'ano.png'
+        instance.profile.image2 = 'noPhoto.png'
+        instance.profile.image3 = 'noPhoto.png'
+        instance.profile.image4 = 'noPhoto.png'
+        instance.profile.image5 = 'noPhoto.png'
+        
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
@@ -50,3 +51,10 @@ class Likes(models.Model):
 class Nopes(models.Model):
     user_id = models.IntegerField()
     noped_user_id = models.IntegerField()
+
+class Messages(models.Model):
+    room_name = models.CharField(max_length=50, blank=True)
+    user_id = models.IntegerField(blank=True)
+    talk_user_id = models.IntegerField(blank=True)
+    message = models.CharField(max_length=500, blank=True)
+    image = models.ImageField(upload_to='', blank=True)

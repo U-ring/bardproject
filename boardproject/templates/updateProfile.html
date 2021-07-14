@@ -1,11 +1,5 @@
-  
 {% extends 'base.html' %}
 
-{% block header %}
-<div class="alert alert-primary" role="alert">
-    <h3>プロフィール編集</h3>
-</div>
-{% endblock header %}
 
 {% block content %}
 <div class="container">
@@ -13,45 +7,73 @@
     <p>yeah</p>
     {% endif %}
     <form method="POST" enctype="multipart/form-data">{% csrf_token %}
-        <p>
-            <label>
-                <span><img src="/medi/{{ profile.image }}"></span>
-                <input type="file" name="image1" style="display: none;">
-            </label>
-        </p>
-        <p>
-            <label>
-                <span><img src="/medi/{{ profile.image2 }}"></span>
-                <input type="file" name="image2" style="display: none;">
-            </label>
-        </p>
-        <p>
-            <label>
-                <span><img src="/medi/{{ profile.image3 }}"></span>
-                <input type="file" name="image3" style="display: none;">
-            </label>
-        </p>
-        <p>
-            <label>
-                <span><img src="/medi/{{ profile.image4 }}"></span>
-                <input type="file" name="image4" style="display: none;">
-            </label>
-        </p>
-        <p>
-            <label>
-                <span><img src="/medi/{{ profile.image5 }}"></span>
-                <input type="file" name="image5" style="display: none;">
-            </label>
-        </p>
-        <input type="file" name="image">
-        <!--<p>ユーザー名<input type="text" name="name" placeholder="{{ user.get_username }}"></p>-->
-        ユーザー名：{{ user.get_username }}
-        <p>プロフィール文<input type="text" name="text" placeholder="{{ profile.introduction_text }}"></p>
-        <!--<p><input type="file" name="snsimage"></p>-->
-        
-        <input type="submit" value="profileEdit">
+        <br><br>
+        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+            
+            <ol class="carousel-indicators">
+                <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></li>
+                <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></li>
+                <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></li>
+                <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3"></li>
+            </ol>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <label class="w-100">
+                        <span class="w-100">
+                            <img class="d-block mx-auto rounded shadow-lg" src="/medi/{{ profile.image2 }}"
+                                style="height: 500px; width: 1000px;">
+                        </span>
+                        <br><br>
+                        <input type="file" name="image2" style="display: none;">
+                    </label>
+                </div>
+                <div class="carousel-item">
+                    <label class="w-100">
+                        <span class="w-100">
+                            <img class="d-block mx-auto rounded shadow" src="/medi/{{ profile.image3 }}"
+                                style="height: 500px; width: 1000px;">
+                        </span>
+                        <br><br>
+                        <input type="file" name="image3" style="display: none;">
+                    </label>
+                </div>
+                <div class="carousel-item">
+                    <label class="w-100">
+                        <span class="w-100">
+                            <img class="d-block mx-auto rounded shadow" src="/medi/{{ profile.image4 }}"
+                                style="height: 500px; width: 1000px;">
+                        </span>
+                        <br><br>
+                        <input type="file" name="image3" style="display: none;">
+                    </label>
+                </div>
+                <div class="carousel-item">
+                    <label class="w-100">
+                        <span class="w-100">
+                            <img class="d-block mx-auto rounded shadow" src="/medi/{{ profile.image5 }}"
+                                style="height: 500px; width: 1000px;">
+                        </span>
+                        <br><br>
+                        <input type="file" name="image5" style="display: none;">
+                    </label>
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon shadow-lg rounded-circle p-1" style="background-color: #d0d0d0;" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+                <span class="carousel-control-next-icon shadow-lg rounded-circle p-1" style="background-color: #d0d0d0;" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </a>
+        </div>
+        <br>
+        <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label"><h1>{{ user.get_username }}</h1></label>            
+            <textarea class="form-control shadow-lg" style="height: 1000px; font-size:24pt;" id="exampleFormControlTextarea1" rows="3" name="introduction_text" placeholder="{{ profile.introduction_text }}"></textarea>            
+        </div>
+        <input type="submit" class="btn btn-primary" value="更新する">
     </form>
-<a href="{% url 'logout' %}">logout</a>
-
+    <br>
 </div>
 {% endblock content %}

@@ -15,9 +15,13 @@ def signupfunc(request):
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
+        if '-' in username or User.objects.filter(username=username).exists():
+            return render(request, 'signup.html', {'error':'ユーザーネームに無効な文字が含まれているか、既に存在しているユーザーネームです。'})
         try:
             user = User.objects.create_user(username, '', password)
-            return render(request, 'signup.html', {'some':100})
+            login(request, user)
+            print(user.get_username)
+            return redirect('/<int:pk>/update/')
         except IntegrityError:
             return render(request, 'signup.html', {'error':'このユーザーは既に登録されています。'})
     return render(request, 'signup.html')
@@ -37,7 +41,7 @@ def loginfunc(request):
             return render(request, 'login.html', {})
     return render(request, 'login.html', {})
 @login_required
-def listfunc(request):    
+def listfunc(request):
     likeUsers = Likes.objects.filter(user_id=request.user.id)
     nopeUsers = Nopes.objects.filter(user_id=request.user.id)
     
@@ -46,13 +50,12 @@ def listfunc(request):
     object_list = []
     allUsers = User.objects.all()
 
+    print(Likes.objects.filter(user_id=1, liked_user_id=3).exists())
+
     for user in allUsers:
-        if not Likes.objects.filter(liked_user_id=user.id).exists():
+        if not Likes.objects.filter(user_id=request.user.id, liked_user_id=user.id).exists() and not Nopes.objects.filter(user_id=request.user.id ,noped_user_id=user.id).exists() and user.id != request.user.id:
             object_list.append(user)
-        for line in object_list:
-            for nopeUser in nopeUsers:
-                if not Nopes.objects.filter(noped_user_id=user.id).exists() and nopeUser.noped_user_id != line.id:
-                    object_list.append(user)
+            break
 
     # object_list = User.objects.all()
 
@@ -100,6 +103,16 @@ def nopefunc(request, pk):
     nope.save()
     return redirect('list')
 
+def deleteMachingfunc(request):
+    #object = BoardModel.objects.get_object_or_404(BoardModel, pk=pk)
+    print('ログインユーザーidは')
+    print(request.user.id)
+    print('マッチングユーザーidは')
+    print(request.POST['machingUserId'])
+    likeUser = Likes.objects.filter(user_id=request.user.id, liked_user_id=request.POST['machingUserId']).delete()
+
+    return redirect('machinglist')
+
 #ここから
 def machinglistfunc(request):    
     likeUser = Likes.objects.filter(user_id=request.user.id)
@@ -111,6 +124,11 @@ def machinglistfunc(request):
             if item.liked_user_id == item2.user_id:
                 # machingList = User.objects.get(pk=item.liked_user_id)
                 machingList.append(User.objects.get(pk=item.liked_user_id))
+                # for li in machingList:
+                #     print("userのidは")
+                #     print(li.id)
+                #     print("profileのuser_idは")
+                #     print(li.profile.user_id)
     return render(request, 'machinglist.html', {'machingList':machingList})
 
 def profileEditfunc(request):
@@ -135,8 +153,20 @@ class profileUpdate(UpdateView):
     template_name = 'updateProfile.html'
     model = Profile
     fields = ('image','image2','image3','image4','image5','introduction_text')
-    success_url = reverse_lazy('list')
+    success_url = reverse_lazy('<int:pk>/update/')
 
 def chat( request ):
-    print("通ったよ")
-    return render( request, 'chat.html' )
+    #kaneko-tanakaかtanaka-kanekoになってしまうので、後で一意にする処理追加。また、usernameは一意にしてハイフンはダメにする
+    # room = request.POST['talkTo'] + "-" + request.user.username
+    myId = str(request.user.pk)
+    talkToId = str(request.POST['talkToId'])
+    room = "str"
+    if myId < talkToId:
+        room = myId + "T" + talkToId
+    else:
+        room = talkToId + "T" + myId
+    
+    print("talkToIdは")
+    print(request.POST['talkToId'])
+    # room = request.POST.get('talkTo') + "-" + request.user.username
+    return render( request, 'chat.html', {'room':room, 'talkTo':request.POST['talkTo'],'username':request.user.username})

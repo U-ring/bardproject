@@ -1,22 +1,53 @@
-    {% extends 'base.html' %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     {% load static %}
+    <link href="{% static 'style.css' %}" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
 
-    {% block customcss %}
-    <link href="{% static 'style.css' %}" rel="stylesheet"> 
-    {% endblock customcss %}
 
-    {% block content %}
-    <body class="text-center">
-        {{ context }}    
-        <form class="form-signin" method="POST">{% csrf_token %}
+    <title>私は仕事が大好きです。</title>
+</head>
+
+<br>
+
+
+    <body>
+
+        {{ context }}
+        <form class="form-signin text-center" method="POST">{% csrf_token %}
             <h1 class="h3 mb-3 fw-normal">ログインする</h1>
-            <label for="inputEmail" class="visually-hidden">メールアドレス</label>
-            <input type="text" id="inputEmail" class="form-control" placeholder="ユーザーネーム" name="username" required autofocus>
+            <br><br>
+            <label for="inputEmail" class="visually-hidden">ユーザーネーム</label>
+            <input type="text" id="inputEmail" class="form-control" placeholder="ユーザーネーム" name="username" required
+                autofocus>
+                <br>
             <label for="inputPassword" class="visually-hidden">パスワード</label>
             <input type="password" id="inputPassword" class="form-control" placeholder="パスワード" name="password" required>
-
+            <br>
             <button class="w-100 btn btn-lg btn-primary" type="submit">ログイン</button>
+            <br><br><br><br>
+            <div class="d-flex flex-row-reverse mt-2">
+                <a href="{% url 'signup' %}" class="w-20 btn btn-sm btn-success" >サインアップ</a>
+                <div class="col-1"></div>
+                <div class="py-auto ">アカウントをお持ちでない方は</div>
+            </div>
             <p class="mt-5 mb-3 text-muted">&copy; 2017-2021</p>
         </form>
+
     </body>
-    {% endblock content %}
+
+
+</html>
