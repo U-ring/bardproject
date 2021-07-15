@@ -57,4 +57,3 @@ class Messages(models.Model):
     user_id = models.IntegerField(blank=True)
     talk_user_id = models.IntegerField(blank=True)
     message = models.CharField(max_length=500, blank=True)
-    image = models.ImageField(upload_to='', blank=True)

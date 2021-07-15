@@ -21,7 +21,7 @@
                 <br>
                 <form action="" onsubmit="onsubmitButton_JoinChat(); return false;"
                     style="text-align: center; width: 100%;">
-                    <input type="hidden" id="input_username" placeholder="Enter User name" value="{{username}}" autofocus>
+                    <input type="hidden" id="input_username" placeholder="Enter User name" value="{{user.username}}" autofocus>
                     <input type="hidden" id="input_roomname" placeholder="Enter Room name" value="{{room}}">
                     <input type="submit" id="autoClick" value="Join Chat" />
                 </form>
@@ -42,6 +42,8 @@
 
                         Message : <input type="text" id="input_message" autocomplete="off" autofocus/><input id="message-submit" type="submit"
                         value="Send"/>
+                        <input type="hidden" id="input_user_id" value=1>
+                        <input type="hidden" id="input_talk_user_id" value=2>
                         
                 </form>
                 <br>
@@ -116,8 +118,12 @@
                 return;
             }
 
-            // WebSocketを通したメッセージの送信
-            g_socket.send(JSON.stringify({ "message": strMessage }));
+            // WebSocketを通したメッセージの送信            
+            g_socket.send(JSON.stringify({ 
+                                "message": strMessage,
+                                "user_id": document.getElementById("input_user_id").value,
+                                "talk_user_id":document.getElementById("input_talk_user_id").value
+                                            }));
 
             // 送信用テキストHTML要素の中身のクリア
             g_elementInputMessage.value = "";

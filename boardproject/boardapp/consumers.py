@@ -2,6 +2,8 @@ import json
 #from channels.generic.websocket import WebsocketConsumer
 from channels.generic.websocket import AsyncWebsocketConsumer
 #from asgiref.sync import async_to_sync  # async_to_sync() : 非同期関数を同期的に実行する際に使用する。
+from channels.db import database_sync_to_async
+from .models import Messages
 import datetime
 
 # ChatConsumerクラス: WebSocketからの受け取ったものを処理するクラス
@@ -20,7 +22,7 @@ class ChatConsumer( AsyncWebsocketConsumer ):
         # 　たとえば、要求しているユーザーが要求されたアクションを実行する権限を持っていないために、接続を拒否したい場合があります。
         # 　接続を受け入れる場合は、connect()の最後のアクションとしてaccept()を呼び出します。
         await self.accept()
-
+        print("def connect通った")
     # WebSocket切断時の処理
     async def disconnect( self, close_code ):
         # チャットからの離脱
@@ -31,9 +33,12 @@ class ChatConsumer( AsyncWebsocketConsumer ):
     async def receive( self, text_data ):
         # 受信データをJSONデータに復元
         text_data_json = json.loads( text_data )
-
+        # messages = Messages(room_name="1T2", user_id=1, talk_user_id=2,message="yeah")
+        # messages.save()
+        print("def receive通った")
         # チャットへの参加時の処理
         if( 'join' == text_data_json.get( 'data_type' ) ):
+            print("def receiveのifチャット参加したら、を通った")
             # ユーザー名をクラスメンバー変数に設定
             self.strUserName = text_data_json['username']
             # ルーム名の取得　ここエラー出るかも
@@ -48,14 +53,21 @@ class ChatConsumer( AsyncWebsocketConsumer ):
 
         # メッセージ受信時の処理
         else:
+            print("def receiveのelse通った")
+            
+            #ここから
+            
+            
             # メッセージの取り出し
             strMessage = text_data_json['message']
+            print(text_data_json)
+            await self._save_message(strMessage)
             # グループ内の全コンシューマーにメッセージ拡散送信（受信関数を'type'で指定）
             data = {
                 'type': 'chat_message', # 受信処理関数名
                 'message': strMessage, # メッセージ
                 'username': self.strUserName, # ユーザー名
-                'datetime': datetime.datetime.now().strftime( '%Y/%m/%d %H:%M:%S' ), # 現在時刻
+                'datetime': datetime.datetime.now().strftime( '%Y/%m/%d %H:%M' ), # 現在時刻
             }
             await self.channel_layer.group_send( self.strGroupName, data )
 
@@ -90,3 +102,13 @@ class ChatConsumer( AsyncWebsocketConsumer ):
 
         # ルーム名を空に
         self.strGroupName = ''
+
+    #db保存
+    @database_sync_to_async
+    def _save_message(self, message):
+        Messages.objects.create(
+            room_name="1T2",
+            user_id=1,
+            talk_user_id=2, 
+            message="yeah"
+        )

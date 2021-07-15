@@ -21,7 +21,8 @@ def signupfunc(request):
             user = User.objects.create_user(username, '', password)
             login(request, user)
             print(user.get_username)
-            return redirect('/<int:pk>/update/')
+            #後でupdateに変更
+            return redirect('list')
         except IntegrityError:
             return render(request, 'signup.html', {'error':'このユーザーは既に登録されています。'})
     return render(request, 'signup.html')
@@ -153,7 +154,8 @@ class profileUpdate(UpdateView):
     template_name = 'updateProfile.html'
     model = Profile
     fields = ('image','image2','image3','image4','image5','introduction_text')
-    success_url = reverse_lazy('<int:pk>/update/')
+    # success_url = reverse_lazy('<int:pk>/update/')
+    success_url = reverse_lazy('list')
 
 def chat( request ):
     #kaneko-tanakaかtanaka-kanekoになってしまうので、後で一意にする処理追加。また、usernameは一意にしてハイフンはダメにする
@@ -169,4 +171,5 @@ def chat( request ):
     print("talkToIdは")
     print(request.POST['talkToId'])
     # room = request.POST.get('talkTo') + "-" + request.user.username
-    return render( request, 'chat.html', {'room':room, 'talkTo':request.POST['talkTo'],'username':request.user.username})
+    # return render( request, 'chat.html', {'room':room, 'talkTo':request.POST['talkTo'],'username':request.user.username})
+    return render( request, 'chat.html', {'room':room, 'talkTo':request.POST['talkTo'],'user':request.user})

@@ -23,7 +23,7 @@
         <div width="25%" class="my-auto mx-1">
             <div class="my-auto" style="width: 60px; height: 60px;">
                 <div class="rounded-circle shadow-lg p-1">         
-                    <img src="/medi/{{ item.profile.image }}" data-bs-toggle="modal" data-bs-target="#exampleModal" width="50" height="50" class="rounded-circle">
+                    <img src="/medi/{{ item.profile.image }}" data-bs-toggle="modal" data-bs-target="#exampleModal{{item.id}}" width="50" height="50" class="rounded-circle">
                 </div>
             </div>
         </div>
@@ -48,7 +48,7 @@
     </div>
       
       <!-- Modal -->
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal fade" id="exampleModal{{item.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
