@@ -36,7 +36,6 @@ def loginfunc(request):
 
         if user is not None:
             login(request, user)
-            print(user.get_username)
             return redirect('list')
         else:
             return render(request, 'login.html', {})
@@ -46,8 +45,6 @@ def listfunc(request):
     likeUsers = Likes.objects.filter(user_id=request.user.id)
     nopeUsers = Nopes.objects.filter(user_id=request.user.id)
     
-    for like in likeUsers:
-        print(like.user_id)
     object_list = []
     allUsers = User.objects.all()
 
@@ -167,9 +164,5 @@ def chat( request ):
         room = myId + "T" + talkToId
     else:
         room = talkToId + "T" + myId
-    
-    print("talkToIdは")
-    print(request.POST['talkToId'])
-    # room = request.POST.get('talkTo') + "-" + request.user.username
-    # return render( request, 'chat.html', {'room':room, 'talkTo':request.POST['talkTo'],'username':request.user.username})
-    return render( request, 'chat.html', {'room':room, 'talkTo':request.POST['talkTo'],'user':request.user})
+
+    return render( request, 'chat.html', {'room':room, 'talkTo':User.objects.get(id=talkToId),'user':request.user})

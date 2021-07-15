@@ -22,7 +22,7 @@ class ChatConsumer( AsyncWebsocketConsumer ):
         # 　たとえば、要求しているユーザーが要求されたアクションを実行する権限を持っていないために、接続を拒否したい場合があります。
         # 　接続を受け入れる場合は、connect()の最後のアクションとしてaccept()を呼び出します。
         await self.accept()
-        print("def connect通った")
+        
     # WebSocket切断時の処理
     async def disconnect( self, close_code ):
         # チャットからの離脱
@@ -33,9 +33,7 @@ class ChatConsumer( AsyncWebsocketConsumer ):
     async def receive( self, text_data ):
         # 受信データをJSONデータに復元
         text_data_json = json.loads( text_data )
-        # messages = Messages(room_name="1T2", user_id=1, talk_user_id=2,message="yeah")
-        # messages.save()
-        print("def receive通った")
+
         # チャットへの参加時の処理
         if( 'join' == text_data_json.get( 'data_type' ) ):
             print("def receiveのifチャット参加したら、を通った")
@@ -61,7 +59,8 @@ class ChatConsumer( AsyncWebsocketConsumer ):
             # メッセージの取り出し
             strMessage = text_data_json['message']
             print(text_data_json)
-            await self._save_message(strMessage)
+            await self._save_message(text_data_json['room'],text_data_json['user_id'],text_data_json['talk_user_id'],strMessage)
+            # await self._save_message(text_data_json['user_id'],text_data_json['talk_user_id'],strMessage)
             # グループ内の全コンシューマーにメッセージ拡散送信（受信関数を'type'で指定）
             data = {
                 'type': 'chat_message', # 受信処理関数名
@@ -105,10 +104,11 @@ class ChatConsumer( AsyncWebsocketConsumer ):
 
     #db保存
     @database_sync_to_async
-    def _save_message(self, message):
+    def _save_message(self,room_name,user_id, talkTo_user_id, message):
+    # def _save_message(self,user_id, talkTo_user_id, message):
         Messages.objects.create(
-            room_name="1T2",
-            user_id=1,
-            talk_user_id=2, 
-            message="yeah"
+            room_name=room_name,
+            user_id=user_id,
+            talk_user_id=talkTo_user_id, 
+            message=message
         )

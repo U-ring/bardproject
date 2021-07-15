@@ -31,8 +31,7 @@
         <!-- <a href="{% url 'chat' %}" role="button" area-pressed="true"><i class="fas fa-comments chat fa-3x"></i></a> -->
         </div>
         <div class="d-flex flex-row-reverse">
-        <form action="{% url 'chat' %}" method="post" class="px-2">{% csrf_token %}
-            <input type="hidden" name="talkTo" value="{{item.username}}">
+        <form action="{% url 'chat' %}" method="post" class="px-2">{% csrf_token %}            
             <input type="hidden" name="talkToId" value="{{item.pk}}">
             <button type="submit" class="rounded-circle shadow-sm p-2" style="border: none; outline: none">
                 <i class="fas fa-comments chat fa-2x shadow rounded-circle p-2"></i>
