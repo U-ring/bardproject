@@ -155,6 +155,7 @@ class profileUpdate(UpdateView):
     # success_url = reverse_lazy('<int:pk>/update/')
     success_url = reverse_lazy('list')
 
+@login_required
 def chat( request ):
     #kaneko-tanakaかtanaka-kanekoになってしまうので、後で一意にする処理追加。また、usernameは一意にしてハイフンはダメにする
     # room = request.POST['talkTo'] + "-" + request.user.username

@@ -17,8 +17,6 @@ urlpatterns = [
     path('profileEdit/', profileEditfunc, name='profileEdit'),
     path('<int:pk>/update/', profileUpdate.as_view(), name='update'),
     path( '', chat, name='chat' ),
+    
     # path( '<int:pk>', chat, name='chat' ),
 ]
-
-
-path( '', chat, name='chat' ),
