@@ -21,6 +21,7 @@ class ChatConsumer( AsyncWebsocketConsumer ):
         # ・connect()でaccept()を呼び出さないと、接続は拒否されて閉じられます。
         # 　たとえば、要求しているユーザーが要求されたアクションを実行する権限を持っていないために、接続を拒否したい場合があります。
         # 　接続を受け入れる場合は、connect()の最後のアクションとしてaccept()を呼び出します。
+        print("connectの中でacceptの前")
         await self.accept()
         
     # WebSocket切断時の処理
@@ -110,5 +111,6 @@ class ChatConsumer( AsyncWebsocketConsumer ):
             room_name=room_name,
             user_id=user_id,
             talk_user_id=talkTo_user_id, 
-            message=message
+            message=message,
+            send_date=datetime.datetime.now() + datetime.timedelta(hours=9)
         )

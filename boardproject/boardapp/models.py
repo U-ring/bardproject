@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import date
 import math
+from django.utils import timezone
 
 # Create your models here.
 
@@ -57,3 +58,4 @@ class Messages(models.Model):
     user_id = models.IntegerField(blank=True)
     talk_user_id = models.IntegerField(blank=True)
     message = models.CharField(max_length=500, blank=True)
+    send_date = models.DateTimeField(default=timezone.now)

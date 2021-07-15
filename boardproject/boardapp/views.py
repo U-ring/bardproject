@@ -1,8 +1,9 @@
+from django.core.checks import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import authenticate, login, logout
-from .models import BoardModel, Likes, Nopes,Profile
+from .models import BoardModel, Likes, Nopes,Profile, Messages
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
 from django.views.generic.edit import UpdateView
@@ -157,12 +158,27 @@ class profileUpdate(UpdateView):
 def chat( request ):
     #kaneko-tanakaかtanaka-kanekoになってしまうので、後で一意にする処理追加。また、usernameは一意にしてハイフンはダメにする
     # room = request.POST['talkTo'] + "-" + request.user.username
+    print("view.pyやで")
     myId = str(request.user.pk)
     talkToId = str(request.POST['talkToId'])
+    # talkToId = str(request.POST.get('talkToId'))
     room = "str"
     if myId < talkToId:
         room = myId + "T" + talkToId
     else:
         room = talkToId + "T" + myId
+    
+    messages = []
+    for dbMessage in Messages.objects.filter(room_name=room):
+        # print(type(dbMessage.send_date))
+        if dbMessage.user_id==request.user.id:
+            messageDictionary = {"username":request.user.username,"message":dbMessage.message,"date":str(dbMessage.send_date.strftime( '%Y/%m/%d %H:%M' ))}
+            # messageDictionary = {"username":request.user.username,"message":dbMessage.message}
+            messages.append(messageDictionary)
+        else:
+            messageDictionary1 = {"username":User.objects.get(id=talkToId).username,"message":dbMessage.message,"date":str(dbMessage.send_date.strftime( '%Y/%m/%d %H:%M' ))}
+            # messageDictionary1 = {"username":User.objects.get(id=talkToId).username,"message":dbMessage.message}
+            messages.append(messageDictionary1)
+    return render( request, 'chat.html', {'room':room, 'talkTo':User.objects.get(id=talkToId),'user':request.user,'messages':messages})
 
-    return render( request, 'chat.html', {'room':room, 'talkTo':User.objects.get(id=talkToId),'user':request.user})
+  
