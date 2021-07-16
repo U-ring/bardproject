@@ -8,174 +8,196 @@
 
 
 {% block content %}
-    <div id="div_container">
+<div id="div_container">
 
-        <div id="div_header" style="text-align: center;">
-            <h1>{{talkTo.username}}</h1>
-            <input type="hidden" id="talkToUser" value="{{talkTo.username}}">
-        </div>
-
-        <div id="div_main">
-            <div id="div_join_screen">
-                <!-- エンターキーによるボタン押下を行うために、<button>ではなく<form>と<input type="submit">を使用。
-                ボタン押下(=submit)時にページリロードが行われないように、onsubmitの設定の最後に"return false;"を追加。-->
-                <br>
-                <form action="" onsubmit="onsubmitButton_JoinChat(); return false;"
-                    style="text-align: center; width: 100%;">
-                    <input type="hidden" id="input_username" placeholder="Enter User name" value="{{user.username}}" autofocus>
-                    <input type="hidden" id="input_roomname" placeholder="Enter Room name" value="{{room}}">
-                    <input type="submit" id="autoClick" value="Join Chat" />
-                </form>
-                <br>
-            </div>
-
-            <div id="div_chat_screen" style="display: none;">
-                <!-- <button onclick="onclickButton_LeaveChat()">Leave Chat.</button><br /> -->
-                <input type="hidden" id="text_username" readonly="readonly"><br />
-                <input type="hidden" id="text_roomname" readonly="readonly"><br />
-                <!-- エンターキーによるボタン押下を行うために、<button>ではなく<form>と<input type="submit">を使用。
-                ボタン押下(=submit)時にページリロードが行われないように、onsubmitの設定の最後に"return false;"を追加。-->
-                <ul id="list_message">
-                    {% for item in messages %}
-                        {% if item.username != talkTo.username %}
-                        <p class="text-end">{{item.date}} - [{{item.username}}] {{item.message}}</p>
-                        {% else %}
-                        <p class="text-start">{{item.date}} - [{{item.username}}] {{item.message}}</p>
-                        {% endif %}
-                    {% endfor %}
-
-                </ul>
-                <br>
-                <form action="" id="message-form" onsubmit="onsubmitButton_Send(); return false;">
-                    <!-- Message : <input type="text" id="input_message" autocomplete="off" autofocus /><input type="submit"
-                        value="Send" /> -->
-
-                        Message : <input type="text" id="input_message" autocomplete="off" autofocus/><input id="message-submit" type="submit"
-                        value="Send"/>
-                        <input type="hidden" id="input_user_id" value={{user.id}}>
-                        <input type="hidden" id="input_talk_user_id" value={{talkTo.id}}>
-                        
-                </form>
-                <br>
-                <!-- <ul id="list_message"></ul> -->
-
-            </div>
-        </div>
+    <div id="div_header" style="text-align: center;">
+        <br>
+        <h1>{{talkTo.username}}</h1>
+        <input type="hidden" id="talkToUser" value="{{talkTo.username}}">
     </div>
 
-    <script>
-        const g_elementDivJoinScreen = document.getElementById("div_join_screen");
-        const g_elementDivChatScreen = document.getElementById("div_chat_screen");
-        const g_elementInputUserName = document.getElementById("input_username");
-        const g_elementInputRoomName = document.getElementById("input_roomname");
+    <div id="div_main">
+        <div id="div_join_screen">
+            <!-- エンターキーによるボタン押下を行うために、<button>ではなく<form>と<input type="submit">を使用。
+                ボタン押下(=submit)時にページリロードが行われないように、onsubmitの設定の最後に"return false;"を追加。-->
+            <br>
+            <form action="" onsubmit="onsubmitButton_JoinChat(); return false;"
+                style="text-align: center; width: 100%;">
+                <input type="hidden" id="input_username" placeholder="Enter User name" value="{{user.username}}"
+                    autofocus>
+                <input type="hidden" id="input_roomname" placeholder="Enter Room name" value="{{room}}">
 
-        const g_elementTextUserName = document.getElementById("text_username");
-        const g_elementTextRoomName = document.getElementById("text_roomname");
+                <button type="submit" id="autoClick" class="rounded-circle shadow-sm p-2" value="Join Chat"
+                    style="border: none; outline: none">
+                    <i class="far fa-comments fa-8x shadow rounded-circle p-2"></i>
+                </button>
 
-        const g_elementInputMessage = document.getElementById("input_message");
-        const g_elementListMessage = document.getElementById("list_message");
+            </form>
+            <br>
+        </div>
 
-        // WebSocketオブジェクト
-        let ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
-        const g_socket = new WebSocket(ws_scheme + "://" + window.location.host + "/ws/chat/");
+        <div id="div_chat_screen" style="display: none;">
+            <!-- <button onclick="onclickButton_LeaveChat()">Leave Chat.</button><br /> -->
+            <input type="hidden" id="text_username" readonly="readonly"><br />
+            <input type="hidden" id="text_roomname" readonly="readonly"><br />
+            <!-- エンターキーによるボタン押下を行うために、<button>ではなく<form>と<input type="submit">を使用。
+                ボタン押下(=submit)時にページリロードが行われないように、onsubmitの設定の最後に"return false;"を追加。-->
+            <ul id="list_message">
+                {% for item in messages %}
+                {% if item.username != talkTo.username %}
+                <p class="text-end">{{item.date}} - [{{item.username}}] {{item.message}}</p>
+                {% else %}
+                <p class="text-start">{{item.date}} - [{{item.username}}] {{item.message}}</p>
+                {% endif %}
+                {% endfor %}
 
-        // 「Join」ボタンを押すと呼ばれる関数
-        function onsubmitButton_JoinChat() {
-            // ユーザー名
-            let strInputUserName = g_elementInputUserName.value;
-            if (!strInputUserName) {
-                return;
-            }
-            g_elementTextUserName.value = strInputUserName;
+            </ul>
+            <br>
+            <form action="" id="message-form" onsubmit="onsubmitButton_Send(); return false;">
+                <!-- Message : <input type="text" id="input_message" autocomplete="off" autofocus /><input type="submit"
+                        value="Send" /> -->
+                <div class="form-group">
+                    <!-- <input id="message-submit" type="submit" value="Send"/> -->
+                    <input type="hidden" id="input_user_id" value={{user.id}}>
+                    <input type="hidden" id="input_talk_user_id" value={{talkTo.id}}>
 
-            // ルーム名
-            let strInputRoomName = g_elementInputRoomName.value;
-            g_elementTextRoomName.value = strInputRoomName;
+                    <div class="d-flex justify-content-around">
+                        <div class="mx-2"></div>
+                        <input type="text" id="input_message" class="rounded-pill form-control" autocomplete="off"
+                            autofocus />
+                        <div class="mx-2"></div>
+                        <button type="submit" id="message-submit" class="rounded-circle shadow-sm p-2"
+                            style="border: none; outline: none">
+                            <i class="far fa-paper-plane fa-2x shadow rounded-circle p-2"></i>
+                        </button>
+                        <div class="mx-2"></div>
+                    </div>
 
-            // サーバーに"join"を送信
-            g_socket.send(JSON.stringify({ "data_type": "join", "username": strInputUserName, "roomname": strInputRoomName }));
+                </div>
+            </form>
+            <br><br><br><br>
+        </div>
+    </div>
+</div>
 
-            // 画面の切り替え
-            g_elementDivJoinScreen.style.display = "none";  // 参加画面の非表示
-            g_elementDivChatScreen.style.display = "block";  // チャット画面の表示
-          
+<script>
+    const g_elementDivJoinScreen = document.getElementById("div_join_screen");
+    const g_elementDivChatScreen = document.getElementById("div_chat_screen");
+    const g_elementInputUserName = document.getElementById("input_username");
+    const g_elementInputRoomName = document.getElementById("input_roomname");
 
+    const g_elementTextUserName = document.getElementById("text_username");
+    const g_elementTextRoomName = document.getElementById("text_roomname");
+
+    const g_elementInputMessage = document.getElementById("input_message");
+    const g_elementListMessage = document.getElementById("list_message");
+
+    // WebSocketオブジェクト
+    let ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+    const g_socket = new WebSocket(ws_scheme + "://" + window.location.host + "/ws/chat/");
+
+    // 「Join」ボタンを押すと呼ばれる関数
+    function onsubmitButton_JoinChat() {
+        // ユーザー名
+        let strInputUserName = g_elementInputUserName.value;
+        if (!strInputUserName) {
+            return;
+        }
+        g_elementTextUserName.value = strInputUserName;
+
+        // ルーム名
+        let strInputRoomName = g_elementInputRoomName.value;
+        g_elementTextRoomName.value = strInputRoomName;
+
+        // サーバーに"join"を送信
+        g_socket.send(JSON.stringify({ "data_type": "join", "username": strInputUserName, "roomname": strInputRoomName }));
+
+        // 画面の切り替え
+        g_elementDivJoinScreen.style.display = "none";  // 参加画面の非表示
+        g_elementDivChatScreen.style.display = "block";  // チャット画面の表示
+
+        var element = document.documentElement;
+        var bottom = element.scrollHeight - element.clientHeight;
+        window.scroll(0, bottom);
+
+
+    }
+
+    // 「Leave Chat.」ボタンを押すと呼ばれる関数
+    function onclickButton_LeaveChat() {
+        // メッセージリストのクリア
+        while (g_elementListMessage.firstChild) {
+            g_elementListMessage.removeChild(g_elementListMessage.firstChild);
         }
 
-        // 「Leave Chat.」ボタンを押すと呼ばれる関数
-        function onclickButton_LeaveChat() {
-            // メッセージリストのクリア
-            while (g_elementListMessage.firstChild) {
-                g_elementListMessage.removeChild(g_elementListMessage.firstChild);
-            }
+        // ユーザー名
+        g_elementTextUserName.value = "";
 
-            // ユーザー名
-            g_elementTextUserName.value = "";
+        // サーバーに"leave"を送信
+        g_socket.send(JSON.stringify({ "data_type": "leave" }));
 
-            // サーバーに"leave"を送信
-            g_socket.send(JSON.stringify({ "data_type": "leave" }));
+        // 画面の切り替え
+        g_elementDivChatScreen.style.display = "none";  // チャット画面の非表示
+        g_elementDivJoinScreen.style.display = "flex";  // 参加画面の表示
+    }
 
-            // 画面の切り替え
-            g_elementDivChatScreen.style.display = "none";  // チャット画面の非表示
-            g_elementDivJoinScreen.style.display = "flex";  // 参加画面の表示
+    // 「Send」ボタンを押したときの処理
+    function onsubmitButton_Send() {
+        // 送信用テキストHTML要素からメッセージ文字列の取得
+        let strMessage = g_elementInputMessage.value;
+        if (!strMessage) {
+            return;
         }
 
-        // 「Send」ボタンを押したときの処理
-        function onsubmitButton_Send() {
-            // 送信用テキストHTML要素からメッセージ文字列の取得
-            let strMessage = g_elementInputMessage.value;
-            if (!strMessage) {
-                return;
-            }
+        // WebSocketを通したメッセージの送信            
+        g_socket.send(JSON.stringify({
+            "message": strMessage,
+            "user_id": document.getElementById("input_user_id").value,
+            "talk_user_id": document.getElementById("input_talk_user_id").value,
+            "room": document.getElementById("input_roomname").value
+        }));
 
-            // WebSocketを通したメッセージの送信            
-            g_socket.send(JSON.stringify({ 
-                                "message": strMessage,
-                                "user_id": document.getElementById("input_user_id").value,
-                                "talk_user_id":document.getElementById("input_talk_user_id").value,
-                                "room":document.getElementById("input_roomname").value
-                                            }));
-            // g_socket.send(JSON.stringify({ 
-            //                     "message": strMessage
-            //                             }));
+        // 送信用テキストHTML要素の中身のクリア
+        g_elementInputMessage.value = "";
+    }
 
-            // 送信用テキストHTML要素の中身のクリア
-            g_elementInputMessage.value = "";
+    // WebSocketからメッセージ受信時の処理
+    g_socket.onmessage = (event) => {
+        // 自身がまだ参加していないときは、無視。
+        if (!g_elementTextUserName.value) {
+            return;
         }
 
-        // WebSocketからメッセージ受信時の処理
-        g_socket.onmessage = (event) => {
-            // 自身がまだ参加していないときは、無視。
-            if (!g_elementTextUserName.value) {
-                return;
-            }
+        // テキストデータをJSONデータにデコード
+        let data = JSON.parse(event.data);
 
-            // テキストデータをJSONデータにデコード
-            let data = JSON.parse(event.data);
+        // メッセージの整形
 
-            // メッセージの整形
+        let strMessage = data["datetime"] + " - [" + data["username"] + "] " + data["message"];
 
-            let strMessage = data["datetime"] + " - [" + data["username"] + "] " + data["message"];
-    
-            // 拡散されたメッセージをメッセージリストに追加
-            let elementp = document.createElement("p");
-            aa = document.getElementById('talkToUser').value
-            if (data["username"] != aa) {
-                elementp.classList.add('text-end')
-            }
-            
-            elementp.textContent = strMessage;
+        // 拡散されたメッセージをメッセージリストに追加
+        let elementp = document.createElement("p");
+        aa = document.getElementById('talkToUser').value
+        if (data["username"] != aa) {
+            elementp.classList.add('text-end')
+        }
 
-            // g_elementListMessage.prepend(elementp); // リストの一番上に追加
-            g_elementListMessage.append( elementp );    // リストの一番下に追加
-        };
+        elementp.textContent = strMessage;
 
-        // WebSocketクローズ時の処理
-        g_socket.onclose = (event) => {
-            // ウェブページを閉じたとき以外のWebSocketクローズは想定外
-            console.error("Unexpected : Chat socket closed.");
-        };
-    </script>
+        // g_elementListMessage.prepend(elementp); // リストの一番上に追加
+        g_elementListMessage.append(elementp);    // リストの一番下に追加
+
+        var element = document.documentElement;
+        var bottom = element.scrollHeight - element.clientHeight;
+        window.scroll(0, bottom);
+    };
+
+    // WebSocketクローズ時の処理
+    g_socket.onclose = (event) => {
+        // ウェブページを閉じたとき以外のWebSocketクローズは想定外
+        console.error("Unexpected : Chat socket closed.");
+    };
+</script>
 
 
-    {% endblock content %}
+{% endblock content %}
