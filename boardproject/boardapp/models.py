@@ -48,6 +48,7 @@ def save_user_profile(sender, instance, **kwargs):
 class Likes(models.Model):
     user_id = models.IntegerField()
     liked_user_id = models.IntegerField()
+    like_date = models.DateTimeField(default=timezone.now, blank=True)
 
 class Nopes(models.Model):
     user_id = models.IntegerField()

@@ -6,9 +6,8 @@
 <link href="{% static 'list.css' %}" rel="stylesheet">
 {% endblock customcss %}
 
-
 {% block content %}
-<div id="div_container">
+<div id="div_container" class="zoom">
 
     <div id="div_header" style="text-align: center;">
         <br>
@@ -27,8 +26,8 @@
                     autofocus>
                 <input type="hidden" id="input_roomname" placeholder="Enter Room name" value="{{room}}">
 
-                <button type="submit" id="autoClick" class="rounded-circle shadow-sm p-2" value="Join Chat"
-                    style="border: none; outline: none">
+                <button type="submit" id="autoClick" class="rounded-circle shadow-sm p-2 assimilation" value="Join Chat"
+                    style="border: none; outline: none" onMouseOut="this.style.background='linear-gradient(-225deg, #2CD8D5 0%, #C5C1FF 56%, #FFBAC3 100%)'" onMouseOver="this.style.background='rgba(255, 255, 255, .2)'">
                     <i class="far fa-comments fa-8x shadow rounded-circle p-2"></i>
                 </button>
 
@@ -45,29 +44,35 @@
             <ul id="list_message">
                 {% for item in messages %}
                 {% if item.username != talkTo.username %}
-                <p class="text-end">{{item.date}} - [{{item.username}}] {{item.message}}</p>
+                <h4 class="text-end shadow-lg">{{item.username}}</h4>
+                <p></p>
+                <h4 class="text-end">{{item.message}}</h4>
+                <p class="text-end zoom">{{item.date}}</p>
                 {% else %}
-                <p class="text-start">{{item.date}} - [{{item.username}}] {{item.message}}</p>
+
+                <h4 class="text-start shadow-lg">{{item.username}}</h4>
+                <p></p>
+                <h4 class="text-start">{{item.message}}</h4>
+                <p class="text-start zoom">{{item.date}}</p>
+
                 {% endif %}
                 {% endfor %}
 
             </ul>
             <br>
             <form action="" id="message-form" onsubmit="onsubmitButton_Send(); return false;">
-                <!-- Message : <input type="text" id="input_message" autocomplete="off" autofocus /><input type="submit"
-                        value="Send" /> -->
                 <div class="form-group">
-                    <!-- <input id="message-submit" type="submit" value="Send"/> -->
+                    
                     <input type="hidden" id="input_user_id" value={{user.id}}>
                     <input type="hidden" id="input_talk_user_id" value={{talkTo.id}}>
 
                     <div class="d-flex justify-content-around">
                         <div class="mx-2"></div>
-                        <input type="text" id="input_message" class="rounded-pill form-control" autocomplete="off"
+                        <input type="text" id="input_message" class="rounded-pill form-control shadow-lg input-text" autocomplete="off"
                             autofocus />
                         <div class="mx-2"></div>
-                        <button type="submit" id="message-submit" class="rounded-circle shadow-sm p-2"
-                            style="border: none; outline: none">
+                        <button type="submit" id="message-submit" class="rounded-circle shadow-sm assimilation p-2"
+                            style="border: none; outline: none" onMouseOut="this.style.background='linear-gradient(-225deg, #2CD8D5 0%, #C5C1FF 56%, #FFBAC3 100%)'" onMouseOver="this.style.background='rgba(255, 255, 255, .2)'">
                             <i class="far fa-paper-plane fa-2x shadow rounded-circle p-2"></i>
                         </button>
                         <div class="mx-2"></div>
@@ -170,22 +175,50 @@
 
         // テキストデータをJSONデータにデコード
         let data = JSON.parse(event.data);
-
-        // メッセージの整形
-
-        let strMessage = data["datetime"] + " - [" + data["username"] + "] " + data["message"];
+        
+        //ここから
+        let strUser = data["username"];
+        let strMessage1 = data["message"];
+        let strDate = data["datetime"];
+        
+        //ここまで
 
         // 拡散されたメッセージをメッセージリストに追加
-        let elementp = document.createElement("p");
+        
+        //ここから
+        let elementh4 = document.createElement("h4");
+        let elementp2 = document.createElement("p");
+        let elementh42 = document.createElement("h4");
+        let elementp3 = document.createElement("p");
+        //ここまで
+        elementh4.classList.add('shadow-lg');
         aa = document.getElementById('talkToUser').value
         if (data["username"] != aa) {
-            elementp.classList.add('text-end')
+            elementh4.classList.add('text-end');
+            elementh4.classList.add('shadow-lg');
+            elementh42.classList.add('text-end');
+            elementp3.classList.add('text-end');
+            elementp3.classList.add('zoom');       
+        } else{
+            elementh4.classList.add('text-start');
+            elementh4.classList.add('shadow-lg');
+            elementh42.classList.add('text-start');
+            elementp3.classList.add('text-start');
+            elementp3.classList.add('zoom'); 
         }
 
-        elementp.textContent = strMessage;
+        //ここから
+        elementh4.textContent = strUser;
+        elementh42.textContent = strMessage1;
+        elementp3.textContent = strDate;
+        //ここまで
 
         // g_elementListMessage.prepend(elementp); // リストの一番上に追加
-        g_elementListMessage.append(elementp);    // リストの一番下に追加
+        // g_elementListMessage.append(elementp);   // リストの一番下に追加
+        g_elementListMessage.append(elementh4);
+        g_elementListMessage.append(elementp2);
+        g_elementListMessage.append(elementh42);
+        g_elementListMessage.append(elementp3);
 
         var element = document.documentElement;
         var bottom = element.scrollHeight - element.clientHeight;
@@ -198,6 +231,5 @@
         console.error("Unexpected : Chat socket closed.");
     };
 </script>
-
 
 {% endblock content %}
