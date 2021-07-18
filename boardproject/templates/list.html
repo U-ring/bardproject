@@ -9,9 +9,10 @@
 
 {% block content %}
 
-{% for item in object_list %}
 <br>
-<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+{% if nextUser != None %}
+<input type="hidden" id="machingFlag" value="{{machingFlag}}">
+<div id="carouselExampleIndicators" class="carousel slide zoom" data-bs-ride="carousel">
     <ol class="carousel-indicators">
         <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></li>
         <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></li>
@@ -22,7 +23,7 @@
         <div class="carousel-item active">
             <label class="w-100">
                 <span class="w-100">
-                    <img class="d-block mx-auto rounded shadow-lg" src="/medi/{{ item.profile.image2 }}"
+                    <img class="d-block mx-auto rounded shadow-lg" src="/medi/{{ nextUser.profile.image2 }}"
                         style="height: 500px; width: 1000px;">
                 </span>
                 <br><br>
@@ -31,7 +32,7 @@
         <div class="carousel-item">
             <label class="w-100">
                 <span class="w-100">
-                    <img class="d-block mx-auto rounded shadow" src="/medi/{{ item.profile.image3 }}"
+                    <img class="d-block mx-auto rounded shadow" src="/medi/{{ nextUser.profile.image3 }}"
                         style="height: 500px; width: 1000px;">
                 </span>
                 <br><br>
@@ -40,7 +41,7 @@
         <div class="carousel-item">
             <label class="w-100">
                 <span class="w-100">
-                    <img class="d-block mx-auto rounded shadow" src="/medi/{{ item.profile.image4 }}"
+                    <img class="d-block mx-auto rounded shadow" src="/medi/{{ nextUser.profile.image4 }}"
                         style="height: 500px; width: 1000px;">
                 </span>
                 <br><br>
@@ -49,7 +50,7 @@
         <div class="carousel-item">
             <label class="w-100">
                 <span class="w-100">
-                    <img class="d-block mx-auto rounded shadow" src="/medi/{{ item.profile.image5 }}"
+                    <img class="d-block mx-auto rounded shadow" src="/medi/{{ nextUser.profile.image5 }}"
                         style="height: 500px; width: 1000px;">
                 </span>
                 <br><br>
@@ -70,14 +71,24 @@
 <br>
 <div class="mb-3">
   <div class="d-flex justify-content-around">        
-    <a href="{% url 'nope' item.pk %}" role="button" area-pressed="true"><i class="far fa-grin-beam-sweat nope fa-3x"></i></a>
-    <h1>{{ item.username }}</h1>
-    <a href="{% url 'like' item.pk %}" role="button" area-pressed="true"><i class="far fa-grin-hearts like fa-3x"></i></i></a>
+    <button type="button" class="rounded-circle shadow-sm p-2 assimilation" onclick="location.href='{% url 'nope' nextUser.pk %}'" style="border: none; outline: none; background: #FFBAC3;" onMouseOut="this.style.background='#FFBAC3'" onMouseOver="this.style.background='rgba(255, 255, 255, .2)'">
+        <i class="far fa-grin-beam-sweat nope fa-3x shadow rounded-circle p-2" style="color: #2CD8D5;"></i>
+        </button>
+    <h1>{{ nextUser.username }}</h1>
+    <button type="button" class="rounded-circle shadow-sm p-2 assimilation" onclick="location.href='{% url 'like' nextUser.pk %}'" style="border: none; outline: none; background: #2CD8D5;" onMouseOut="this.style.background='#2CD8D5'" onMouseOver="this.style.background='rgba(255, 255, 255, .2)'">
+        <i class="far fa-grin-hearts like fa-3x shadow rounded-circle p-2" style="color:#FFBAC3"></i>
+        </button>
   </div>
     
     <br><br>
-    <h3>{{ item.profile.introduction_text }}</h3>
+    <h3>{{ nextUser.profile.introduction_text }}</h3>
 </div>
+{% else %}
+<br><br><br><br><br><br><br><br><br>
+<div class="text-center">
+<h1 class="zoom">表示できるユーザーがいません。</h1>
+</div>
+<br><br><br><br><br><br><br><br><br><br><br>
+{% endif %}
 <br>
-{% endfor %}
 {% endblock content %}

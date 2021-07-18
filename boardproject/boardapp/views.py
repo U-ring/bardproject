@@ -1,4 +1,6 @@
+from datetime import datetime
 from django.core.checks import messages
+from django.db.models.fields import NullBooleanField
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.db import IntegrityError
@@ -8,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
 from django.views.generic.edit import UpdateView
 from django.urls import reverse_lazy
+from django.utils import timezone
 
 # Create your views here.
 
@@ -39,26 +42,41 @@ def loginfunc(request):
             login(request, user)
             return redirect('list')
         else:
-            return render(request, 'login.html', {})
+            return render(request, 'login.html', {"context":"ユーザー名かパスワードを間違えています。"})
     return render(request, 'login.html', {})
 @login_required
 def listfunc(request):
-    likeUsers = Likes.objects.filter(user_id=request.user.id)
-    nopeUsers = Nopes.objects.filter(user_id=request.user.id)
+    # nopeUsers = Nopes.objects.filter(user_id=request.user.id)
     
     object_list = []
     allUsers = User.objects.all()
 
     print(Likes.objects.filter(user_id=1, liked_user_id=3).exists())
 
+    
     for user in allUsers:
         if not Likes.objects.filter(user_id=request.user.id, liked_user_id=user.id).exists() and not Nopes.objects.filter(user_id=request.user.id ,noped_user_id=user.id).exists() and user.id != request.user.id:
             object_list.append(user)
             break
-
-    # object_list = User.objects.all()
-
-    return render(request, 'list.html', {'object_list':object_list})
+    
+    likeUsers = Likes.objects.filter(user_id=request.user.id)
+    likedUsers = Likes.objects.filter(liked_user_id=request.user.id)
+    machingFlag = "false"
+    machingUser = User.objects.get(id=request.user.id)
+    for item in likeUsers:
+        for item2 in likedUsers:
+            if item.liked_user_id == item2.user_id:
+                aaaa = datetime.now()
+                if 2 > (aaaa.replace(tzinfo=None)-item.like_date.replace(tzinfo=None)).total_seconds():
+                    machingUser = User.objects.get(id=item.user_id)
+                    machingFlag = "true"
+                    return render(request, 'maching.html', {"machingUser":machingUser})
+    if len(object_list) != 0:
+        nextUser = object_list[0]
+    else:
+        nextUser = None
+    # return render(request, 'list.html', {'object_list':object_list,"machingFlag":machingFlag})
+    return render(request, 'list.html', {'object_list':object_list,"machingUser":machingUser, "nextUser":nextUser})
 
 def logoutfunc(request):
     logout(request)
@@ -83,6 +101,7 @@ class BoardCreate(CreateView):
     success_url = reverse_lazy('list')
 
 #ここから
+@login_required
 def likefunc(request, pk):
     #object = BoardModel.objects.get_object_or_404(BoardModel, pk=pk)
     like = Likes(user_id=request.user.id, liked_user_id=pk)
@@ -93,6 +112,7 @@ def likefunc(request, pk):
     like.save()
     return redirect('list')
 
+@login_required
 def nopefunc(request, pk):
     #object = BoardModel.objects.get_object_or_404(BoardModel, pk=pk)
     nope = Nopes(user_id=request.user.id, noped_user_id=pk)
@@ -102,6 +122,7 @@ def nopefunc(request, pk):
     nope.save()
     return redirect('list')
 
+@login_required
 def deleteMachingfunc(request):
     #object = BoardModel.objects.get_object_or_404(BoardModel, pk=pk)
     print('ログインユーザーidは')
@@ -113,6 +134,7 @@ def deleteMachingfunc(request):
     return redirect('machinglist')
 
 #ここから
+@login_required
 def machinglistfunc(request):    
     likeUser = Likes.objects.filter(user_id=request.user.id)
     likedUser = Likes.objects.filter(liked_user_id=request.user.id)
@@ -121,15 +143,12 @@ def machinglistfunc(request):
     for item in likeUser:
         for item2 in likedUser:
             if item.liked_user_id == item2.user_id:
-                # machingList = User.objects.get(pk=item.liked_user_id)
+
                 machingList.append(User.objects.get(pk=item.liked_user_id))
-                # for li in machingList:
-                #     print("userのidは")
-                #     print(li.id)
-                #     print("profileのuser_idは")
-                #     print(li.profile.user_id)
+
     return render(request, 'machinglist.html', {'machingList':machingList})
 
+@login_required
 def profileEditfunc(request):
     profile = Profile.objects.get(pk=request.user.id)
     if request.method == "POST":
@@ -148,6 +167,7 @@ def profileEditfunc(request):
             
     return render(request, 'profileEdit.html', {'profile':profile})
 
+
 class profileUpdate(UpdateView):
     template_name = 'updateProfile.html'
     model = Profile
@@ -159,9 +179,14 @@ class profileUpdate(UpdateView):
 def chat( request ):
     #kaneko-tanakaかtanaka-kanekoになってしまうので、後で一意にする処理追加。また、usernameは一意にしてハイフンはダメにする
     # room = request.POST['talkTo'] + "-" + request.user.username
-    print("view.pyやで")
+    if request.POST.get('talkToId') == None:
+        return redirect('machinglist')
+    print("def chatです")
+    print(request.POST.get('talkToId'))
+    print("def chatです2")
     myId = str(request.user.pk)
     talkToId = str(request.POST['talkToId'])
+    
     # talkToId = str(request.POST.get('talkToId'))
     room = "str"
     if myId < talkToId:

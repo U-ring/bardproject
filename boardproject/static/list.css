@@ -1,7 +1,8 @@
 html,
 
 body {
-  background-color: #F2F2F2;
+  /* background-color: #f2f2f2; */
+  background: linear-gradient(-225deg, #2CD8D5 0%, #C5C1FF 56%, #FFBAC3 100%);
   }
 
 .like{
@@ -14,4 +15,60 @@ body {
 
 .chat{
   color:#CFF2AC;
+}
+
+.assimilation{
+  background: linear-gradient(-225deg, #2CD8D5 0%, #C5C1FF 56%, #FFBAC3 100%);
+  font-weight: bold;
+}
+
+.intro-text{
+  height: 1000px;
+   font-size:24pt;
+}
+
+.input-text{
+  font-weight: bold;
+   font-size:18pt;
+}
+
+.modal-backdrop {
+  bottom: 0;
+  }
+
+
+
+  .zoom {
+    animation: zoomIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) 1 forwards;
+  }
+   
+  @keyframes zoomIn {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+.fade2 {
+    animation-name: fadein;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+}
+@keyframes fadein {
+from {
+    opacity: 0;
+    /* transform: translateY(20px); */
+}
+to {
+    opacity: 1;
+    /* transform: translateY(0); */
+}
+}
+
+h1{
+  font-weight: bold;
 }

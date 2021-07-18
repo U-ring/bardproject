@@ -18,24 +18,32 @@
         crossorigin="anonymous"></script>
 
 
-    <title>私は仕事が大好きです。</title>
+    <title>サインアップ</title>
 </head>
+<div class="top-op">
+    <br><br><br><br><br><br><br><br>
+    <h1>Board</h1>
+    <h1>Matching</h1>
+</div>
+<div class="top-op2"></div>
+<div class="top-op3"></div>
+<div class="img"></div>
 <br>
     <body class="text-center">            
             <form class="form-signin" method="POST">{% csrf_token %}
-                <h1 class="h3 mb-3 fw-normal">サインアップする</h1>
+                <h1 class="h3 mb-3 fw-normal fade2">サインアップする</h1>
                 <br><br>
                 {{ error }}
                 <label for="inputEmail" class="visually-hidden">メールアドレス</label>
-                <input type="text" id="inputEmail" class="form-control" placeholder="ユーザーネーム" name="username" required autofocus>
+                <input type="text" id="inputEmail" class="form-control rounded-pill shadow-lg" placeholder="ユーザーネーム" name="username" required autofocus maxlength="40">
                 <br>
                 <label for="inputPassword" class="visually-hidden">パスワード</label>
-                <input type="password" id="inputPassword" class="form-control" placeholder="パスワード" name="password" required>
+                <input type="password" id="inputPassword" class="form-control rounded-pill shadow-lg" placeholder="パスワード" name="password" required maxlength="20">
                 <br>
-                <button class="w-100 btn btn-lg btn-success" type="submit">サインアップ</button>
+                <button class="w-100 btn btn-lg shadow-lg rounded-pill p-1 zoom" type="submit">サインアップ</button>
                 <br><br><br><br>
                 <div class="d-flex flex-row-reverse mt-2">
-                    <a href="{% url 'login' %}" class="w-20 btn btn-sm btn-primary" >ログイン</a>
+                    <a href="{% url 'login' %}" class="w-20 btn btn-sm shadow-lg rounded-pill p-1 zoom" >ログイン</a>
                     <div class="col-1"></div>
                     <div class="py-auto ">アカウントをお持ちの方は</div>
                 </div>

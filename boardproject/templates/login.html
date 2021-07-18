@@ -18,29 +18,42 @@
         crossorigin="anonymous"></script>
 
 
-    <title>私は仕事が大好きです。</title>
+    <title>ログイン</title>
 </head>
+
+
+<div class="top-op text-center">
+    <br><br><br><br><br><br><br><br>
+    <h1>Board</h1>
+    <h1>Matching</h1>
+</div>
+<div class="top-op2">
+    
+</div>
+<div class="top-op3"></div>
+<div class="img"></div>
 
 <br>
 
 
     <body>
 
-        {{ context }}
+        
         <form class="form-signin text-center" method="POST">{% csrf_token %}
-            <h1 class="h3 mb-3 fw-normal">ログインする</h1>
+            <h1 class="h3 mb-3 fw-normal fade2">ログインする</h1>
+            <b>{{ context }}</b>
             <br><br>
-            <label for="inputEmail" class="visually-hidden">ユーザーネーム</label>
-            <input type="text" id="inputEmail" class="form-control" placeholder="ユーザーネーム" name="username" required
+            <label for="inputEmail" class="visually-hidden zoom">ユーザーネーム</label>
+            <input type="text" id="inputEmail" class="form-control rounded-pill shadow-lg input-bold" placeholder="ユーザーネーム" name="username" required
                 autofocus>
                 <br>
-            <label for="inputPassword" class="visually-hidden">パスワード</label>
-            <input type="password" id="inputPassword" class="form-control" placeholder="パスワード" name="password" required>
+            <label for="inputPassword" class="visually-hidden zoom">パスワード</label>
+            <input type="password" id="inputPassword" class="form-control rounded-pill shadow-lg input-bold" placeholder="パスワード" name="password" required>
             <br>
-            <button class="w-100 btn btn-lg btn-primary" type="submit">ログイン</button>
+            <button class="w-100 btn btn-lg shadow-lg rounded-pill p-1 zoom" type="submit">ログイン</button>
             <br><br><br><br>
             <div class="d-flex flex-row-reverse mt-2">
-                <a href="{% url 'signup' %}" class="w-20 btn btn-sm btn-success" >サインアップ</a>
+                <a href="{% url 'signup' %}" class="w-20 btn btn-sm shadow-lg rounded-pill p-1 zoom" >サインアップ</a>
                 <div class="col-1"></div>
                 <div class="py-auto ">アカウントをお持ちでない方は</div>
             </div>
