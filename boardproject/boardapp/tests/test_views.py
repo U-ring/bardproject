@@ -8,19 +8,12 @@ from ..models import User
 
 
 class DuplicateSignUpTests(TestCase):
-    def setUp(self):
-        print("1です")
-        url = reverse('signup')
-        data = {
-            'username': 'saigo',
-            'password': 'saigo'
-        }
-        self.home_url = reverse('list')
-        self.response = self.client.post(url, data)
 
+    def setUp(self):
+        User(username='saigo', password='saigo').save()
+
+    # 既に存在するusernameでユーザー登録しようとした場合、登録完了画面である/list/にリダイレクトしない、かつuser登録がされないことをテストするメソッド
     def test_dont_create_user2(self):
-        # 下記False
-        self.assertRedirects(self.response, self.home_url, status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
         userCount = User.objects.all().count()
 
         url = reverse('signup')
@@ -35,14 +28,15 @@ class DuplicateSignUpTests(TestCase):
         self.assertEqual(userCount, userCount2)
 
     def tearDown(self):
-        User.objects.filter(username="saigo").delete()
+        User.objects.all().delete()
 
 # 下記サインアップ失敗時テスト
 
 
 class InvalidSignUpTests(TestCase):
+
+    # usernameに無効文字「-」が入っていた場合、登録完了画面である/list/にリダイレクトしない、かつuser登録がされないことをテストするメソッド
     def test_dont_create_user(self):
-        print("2です")
         url = reverse('signup')
         data = {
             'username': 'saigo-',
@@ -53,44 +47,42 @@ class InvalidSignUpTests(TestCase):
         self.assertFalse(User.objects.exists())
 
     def tearDown(self):
-        User.objects.filter(username="saigo").delete()
+        User.objects.all().delete()
 
 # 下記サインアップのテスト
 
 
 class SignupTests(TestCase):
-    # def setUp(self):
-    #     url = reverse('signup')
-    #     self.response = self.client.get(url)
 
+    # CSRF対策のトークンが含まれているかのテストメソッド
     def test_csrf(self):
-        print("3です")
         url = reverse('signup')
         self.response = self.client.get(url)
         self.assertContains(self.response, 'csrfmiddlewaretoken')
 
+    # signupページへの遷移が無事行われているかのテストメソッド
     def test_signup_status_code(self):
-        print("4です")
         url = reverse('signup')
         self.response = self.client.get(url)
         self.assertEquals(self.response.status_code, 200)
 
+    # signupのURLパスとview関数がマッピングしているかのテストメソッド
     def test_signup_url_resolves_signup_view(self):
-        print("5です")
         url = reverse('signup')
         self.response = self.client.get(url)
         view = resolve('/signup/')
         self.assertEquals(view.func, signupfunc)
 
     def tearDown(self):
-        User.objects.filter(username="saigo").delete()
+        User.objects.all().delete()
 
 # 下記サインアップ成功時のテスト
 
 
 class SuccessfulSignUpTests(TestCase):
+
+    # ユーザー登録成功した際に/list/にリダイレクトがされているかをテストするメソッド
     def test_redirection(self):
-        print("6です")
         url = reverse('signup')
         data = {
             'username': 'saigo',
@@ -100,8 +92,8 @@ class SuccessfulSignUpTests(TestCase):
         self.home_url = reverse('list')
         self.assertRedirects(self.response, self.home_url, status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
 
+    # ユーザー登録と同時にそのユーザーがログインに成功しているかをテストするメソッド
     def test_user_authentication(self):
-        print("7です")
         url = reverse('signup')
         data = {
             'username': 'saigo',
@@ -109,13 +101,13 @@ class SuccessfulSignUpTests(TestCase):
         }
         self.response = self.client.post(url, data)
         self.home_url = reverse('list')
-        # 下記、Falseを出力している
+
         response = self.client.get(self.home_url)
         user = response.context.get('user')
         self.assertTrue(user.is_authenticated)
 
+    # ユーザー登録と同時にそのユーザーのレコードがDBに保存されているかをテストするメソッド
     def test_user_creation(self):
-        print("8です")
         url = reverse('signup')
         data = {
             'username': 'saigo',
@@ -123,8 +115,8 @@ class SuccessfulSignUpTests(TestCase):
         }
         self.response = self.client.post(url, data)
         self.home_url = reverse('list')
-        # ここまで
-        self.assertTrue(User.objects.exists())
+
+        self.assertTrue(User.objects.filter(username='saigo').exists())
 
     def tearDown(self):
-        User.objects.filter(username="saigo").delete()
+        User.objects.all().delete()
