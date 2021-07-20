@@ -1,48 +1,85 @@
-from django.http import request
+from django.http import request, response
 from django.test import TestCase
 from django.urls import reverse, resolve
 from boardapp.views import signupfunc
-
 from ..models import User
+
+# 下記usernameの重複テスト
+
+
+class DuplicateSignUpTests(TestCase):
+    def test_dont_create_user2(self):
+        print("1です")
+        url = reverse('signup')
+        data = {
+            'username': 'saigo',
+            'password': 'saigo'
+        }
+        self.home_url = reverse('list')
+        self.response = self.client.post(url, data)
+        # 下記False
+        self.assertRedirects(self.response, self.home_url, status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
+        userCount = User.objects.all().count()
+
+        self.response = self.client.get('logout')
+        self.response = self.client.post(url, data)
+        userCount2 = User.objects.all().count()
+        self.assertEquals(self.response.status_code, 200)
+        self.assertEqual(userCount, userCount2)
+
+# 下記サインアップ失敗時テスト
+
+
+class InvalidSignUpTests(TestCase):
+    def test_dont_create_user(self):
+        print("2です")
+        # ここから
+        url = reverse('signup')
+        data = {
+            'username': 'saigo-',
+            'password': 'saigo'
+        }
+        self.response = self.client.post(url, data)
+        # ここまで
+        self.assertEquals(self.response.status_code, 200)
+        self.assertFalse(User.objects.exists())
+
+# 下記サインアップのテスト
 
 
 class SignupTests(TestCase):
-
     # def setUp(self):
-    #     user = User.objects.create(username='testMan', password='testPass')
+    #     url = reverse('signup')
+    #     self.response = self.client.get(url)
 
-    # def test_get(self):
-    #     response = self.client.get(reverse('signup'))
-    #     self.assertEqual(response.status_code, 200)
-
-    # def test_get_1users_by_list(self):
-    #     response = self.client.get(reverse('signup'))
-    #     self.assertEqual(response.status_code, 200)
-
-    # 下記サインアップのテスト
-    def setUp(self):
+    def test_csrf(self):
+        print("3です")
         url = reverse('signup')
         self.response = self.client.get(url)
+        self.assertContains(self.response, 'csrfmiddlewaretoken')
 
     def test_signup_status_code(self):
-        # print("self.assertEquals(self.response.status_code, 200)は")
+        print("4です")
+        url = reverse('signup')
+        self.response = self.client.get(url)
         self.assertEquals(self.response.status_code, 200)
 
     def test_signup_url_resolves_signup_view(self):
+        print("5です")
+        url = reverse('signup')
+        self.response = self.client.get(url)
         view = resolve('/signup/')
-        print("self.assertEquals(view.func, signupfunc)は")
         self.assertEquals(view.func, signupfunc)
-
-    def test_csrf(self):
-        # print("self.assertContains(self.response, 'csrfmiddlewaretoken')は")
-        self.assertContains(self.response, 'csrfmiddlewaretoken')
 
 # 下記サインアップ成功時のテスト
 
 
 class SuccessfulSignUpTests(TestCase):
-    def setUp(self):
-        print("setUpの最上部")
+    def test_redirection(self):
+        # print(self.response)
+        # print(self.home_url)
+        print("6です")
+        # ここから
         url = reverse('signup')
         data = {
             'username': 'saigo',
@@ -50,62 +87,33 @@ class SuccessfulSignUpTests(TestCase):
         }
         self.response = self.client.post(url, data)
         self.home_url = reverse('list')
-        print("setUpの最下部")
-    # @classmethod
-    # def setUpClass(cls):
-    #     url = reverse('signup')
-    #     data = {
-    #         'username': 'saigo',
-    #         'password': 'saigo'
-    #     }
-    #     cls.response = cls.client.post(url, data)
-    #     cls.home_url = reverse('list')
-
-    def test_redirection(self):
-        print("self.assertRedirectsの上")
-        # print(self.response)
-        # print(self.home_url)
+        # 下記False
         self.assertRedirects(self.response, self.home_url, status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
-        print("self.assertRedirectsの下")
         # self.assertRedirects(self.response, self.home_url)
 
-    def test_user_creation(self):
-        print("self.assertTrue(User.objects.exists())の上")
-        self.assertTrue(User.objects.exists())
-
     def test_user_authentication(self):
-        print("test_user_authentication(self)の最上部")
-        response = self.client.get(self.home_url)
-        user = response.context.get('user')
-        print("self.assertTrue(user.is_authenticated)の上")
-        self.assertTrue(user.is_authenticated)
-
-# 下記サインアップ失敗時テスト
-
-
-class InvalidSignUpTests(TestCase):
-    def setUp(self):
+        print("7です")
+        # ここから
         url = reverse('signup')
         data = {
-            'username': 'saigo-',
+            'username': 'saigo',
             'password': 'saigo'
         }
-        self.response = self.client.post(url, data)  # submit an empty dictionary
+        self.response = self.client.post(url, data)
+        self.home_url = reverse('list')
+        # 下記、Falseを出力している
+        response = self.client.get(self.home_url)
+        user = response.context.get('user')
+        self.assertTrue(user.is_authenticated)
 
-    def test_dont_create_user(self):
-        self.assertFalse(User.objects.exists())
-
-    # 下記usernameの重複テスト
-# class DuplicateSignUpTests(TestCase):
-#     def setUp(self):
-#         user = User.objects.create(username='saigo', password='saigo')
-#         # user.save()
-#         url = reverse('signup')
-#         data = {
-#             'username': 'saigo',
-#             'password': 'saigo'
-#         }
-#         self.response = self.client.post(url, data)  # submit an empty dictionary
-
-#     def test_dont_create_user2(self):
-#         self.assertFalse(User.objects.exists())
+    def test_user_creation(self):
+        print("8です")
+        url = reverse('signup')
+        data = {
+            'username': 'saigo',
+            'password': 'saigo'
+        }
+        self.response = self.client.post(url, data)
+        self.home_url = reverse('list')
+        # ここまで
+        self.assertTrue(User.objects.exists())
