@@ -24,8 +24,8 @@ def signupfunc(request):
         try:
             user = User.objects.create_user(username, '', password)
             login(request, user)
-            print(user.get_username)
-            #後でupdateに変更
+
+            # 後でupdateに変更
             return redirect('list')
         except IntegrityError:
             return render(request, 'signup.html', {'error':'このユーザーは既に登録されています。'})
@@ -47,13 +47,9 @@ def loginfunc(request):
 @login_required
 def listfunc(request):
     # nopeUsers = Nopes.objects.filter(user_id=request.user.id)
-    
     object_list = []
     allUsers = User.objects.all()
 
-    print(Likes.objects.filter(user_id=1, liked_user_id=3).exists())
-
-    
     for user in allUsers:
         if not Likes.objects.filter(user_id=request.user.id, liked_user_id=user.id).exists() and not Nopes.objects.filter(user_id=request.user.id ,noped_user_id=user.id).exists() and user.id != request.user.id:
             object_list.append(user)

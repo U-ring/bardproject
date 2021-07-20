@@ -8,7 +8,7 @@ from ..models import User
 
 
 class DuplicateSignUpTests(TestCase):
-    def test_dont_create_user2(self):
+    def setUp(self):
         print("1です")
         url = reverse('signup')
         data = {
@@ -17,15 +17,25 @@ class DuplicateSignUpTests(TestCase):
         }
         self.home_url = reverse('list')
         self.response = self.client.post(url, data)
+
+    def test_dont_create_user2(self):
         # 下記False
         self.assertRedirects(self.response, self.home_url, status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
         userCount = User.objects.all().count()
 
+        url = reverse('signup')
+        data = {
+            'username': 'saigo',
+            'password': 'saigo'
+        }
         self.response = self.client.get('logout')
         self.response = self.client.post(url, data)
         userCount2 = User.objects.all().count()
         self.assertEquals(self.response.status_code, 200)
         self.assertEqual(userCount, userCount2)
+
+    def tearDown(self):
+        User.objects.filter(username="saigo").delete()
 
 # 下記サインアップ失敗時テスト
 
@@ -33,16 +43,17 @@ class DuplicateSignUpTests(TestCase):
 class InvalidSignUpTests(TestCase):
     def test_dont_create_user(self):
         print("2です")
-        # ここから
         url = reverse('signup')
         data = {
             'username': 'saigo-',
             'password': 'saigo'
         }
         self.response = self.client.post(url, data)
-        # ここまで
         self.assertEquals(self.response.status_code, 200)
         self.assertFalse(User.objects.exists())
+
+    def tearDown(self):
+        User.objects.filter(username="saigo").delete()
 
 # 下記サインアップのテスト
 
@@ -71,15 +82,15 @@ class SignupTests(TestCase):
         view = resolve('/signup/')
         self.assertEquals(view.func, signupfunc)
 
+    def tearDown(self):
+        User.objects.filter(username="saigo").delete()
+
 # 下記サインアップ成功時のテスト
 
 
 class SuccessfulSignUpTests(TestCase):
     def test_redirection(self):
-        # print(self.response)
-        # print(self.home_url)
         print("6です")
-        # ここから
         url = reverse('signup')
         data = {
             'username': 'saigo',
@@ -87,13 +98,10 @@ class SuccessfulSignUpTests(TestCase):
         }
         self.response = self.client.post(url, data)
         self.home_url = reverse('list')
-        # 下記False
         self.assertRedirects(self.response, self.home_url, status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
-        # self.assertRedirects(self.response, self.home_url)
 
     def test_user_authentication(self):
         print("7です")
-        # ここから
         url = reverse('signup')
         data = {
             'username': 'saigo',
@@ -117,3 +125,6 @@ class SuccessfulSignUpTests(TestCase):
         self.home_url = reverse('list')
         # ここまで
         self.assertTrue(User.objects.exists())
+
+    def tearDown(self):
+        User.objects.filter(username="saigo").delete()
