@@ -12,6 +12,3 @@ class UserModelTests(TestCase):
         user.save()
         saved_users = User.objects.all()
         self.assertEqual(saved_users.count(), 1)
-
-    
-    

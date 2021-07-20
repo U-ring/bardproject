@@ -5,7 +5,9 @@ from boardapp.views import signupfunc
 
 from ..models import User
 
+
 class SignupTests(TestCase):
+
     # def setUp(self):
     #     user = User.objects.create(username='testMan', password='testPass')
 
@@ -36,8 +38,11 @@ class SignupTests(TestCase):
         self.assertContains(self.response, 'csrfmiddlewaretoken')
 
 # 下記サインアップ成功時のテスト
+
+
 class SuccessfulSignUpTests(TestCase):
     def setUp(self):
+        print("setUpの最上部")
         url = reverse('signup')
         data = {
             'username': 'saigo',
@@ -45,25 +50,39 @@ class SuccessfulSignUpTests(TestCase):
         }
         self.response = self.client.post(url, data)
         self.home_url = reverse('list')
+        print("setUpの最下部")
+    # @classmethod
+    # def setUpClass(cls):
+    #     url = reverse('signup')
+    #     data = {
+    #         'username': 'saigo',
+    #         'password': 'saigo'
+    #     }
+    #     cls.response = cls.client.post(url, data)
+    #     cls.home_url = reverse('list')
 
     def test_redirection(self):
         print("self.assertRedirectsの上")
-        print(self.response)
-        print(self.home_url)
-        self.assertRedirects(self.response, self.home_url)
+        # print(self.response)
+        # print(self.home_url)
+        self.assertRedirects(self.response, self.home_url, status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
+        print("self.assertRedirectsの下")
+        # self.assertRedirects(self.response, self.home_url)
 
     def test_user_creation(self):
-        print("self.assertTrue(User.objects.exists())")
+        print("self.assertTrue(User.objects.exists())の上")
         self.assertTrue(User.objects.exists())
 
     def test_user_authentication(self):
-
+        print("test_user_authentication(self)の最上部")
         response = self.client.get(self.home_url)
         user = response.context.get('user')
         print("self.assertTrue(user.is_authenticated)の上")
         self.assertTrue(user.is_authenticated)
 
-#下記サインアップ失敗時テスト
+# 下記サインアップ失敗時テスト
+
+
 class InvalidSignUpTests(TestCase):
     def setUp(self):
         url = reverse('signup')
