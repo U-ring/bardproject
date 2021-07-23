@@ -9,7 +9,7 @@ from .models import BoardModel, Likes, Nopes,Profile, Messages
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
 from django.views.generic.edit import UpdateView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 
 # Create your views here.
@@ -23,6 +23,8 @@ def signupfunc(request):
             return render(request, 'signup.html', {'error':'ユーザーネームに無効な文字が含まれているか、既に存在しているユーザーネームです。'})
         try:
             user = User.objects.create_user(username, '', password)
+            user.profile.gender = request.POST['gender']
+            user.profile.save()
             login(request, user)
 
             # 後でupdateに変更
@@ -49,16 +51,27 @@ def listfunc(request):
     # nopeUsers = Nopes.objects.filter(user_id=request.user.id)
     object_list = []
     allUsers = User.objects.all()
+    loginUser = request.user
+
+    userGender = "性別"
+    if loginUser.profile.gender == "男性":
+        userGender = "女性"
+    elif loginUser.profile.gender == "女性":
+        userGender = "男性"
 
     for user in allUsers:
-        if not Likes.objects.filter(user_id=request.user.id, liked_user_id=user.id).exists() and not Nopes.objects.filter(user_id=request.user.id ,noped_user_id=user.id).exists() and user.id != request.user.id:
-            object_list.append(user)
-            break
-    
-    likeUsers = Likes.objects.filter(user_id=request.user.id)
-    likedUsers = Likes.objects.filter(liked_user_id=request.user.id)
+        # print(user.profile.gender)
+        if user.profile.gender == userGender:
+            if not Likes.objects.filter(user_id=loginUser.id, liked_user_id=user.id).exists() and not Nopes.objects.filter(user_id=loginUser.id ,noped_user_id=user.id).exists() and user.id != loginUser.id:
+                object_list.append(user)
+                print(user.profile.gender)
+                break
+
+    likeUsers = Likes.objects.filter(user_id=loginUser.id)
+    likedUsers = Likes.objects.filter(liked_user_id=loginUser.id)
     machingFlag = "false"
-    machingUser = User.objects.get(id=request.user.id)
+    machingUser = User.objects.get(id=loginUser.id)
+
     for item in likeUsers:
         for item2 in likedUsers:
             if item.liked_user_id == item2.user_id:
@@ -168,8 +181,9 @@ class profileUpdate(UpdateView):
     template_name = 'updateProfile.html'
     model = Profile
     fields = ('image','image2','image3','image4','image5','introduction_text')
-    # success_url = reverse_lazy('<int:pk>/update/')
-    success_url = reverse_lazy('list')
+
+    def get_success_url(self):
+        return reverse('update',kwargs={'pk': self.object.pk})
 
 @login_required
 def chat( request ):

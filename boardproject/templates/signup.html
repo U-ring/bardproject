@@ -34,11 +34,25 @@
                 <h1 class="h3 mb-3 fw-normal fade2">サインアップする</h1>
                 <br><br>
                 {{ error }}
-                <label for="inputEmail" class="visually-hidden">メールアドレス</label>
+                <label for="inputEmail" class="visually-hidden">ユーザーネーム</label>
                 <input type="text" id="inputEmail" class="form-control rounded-pill shadow-lg" placeholder="ユーザーネーム" name="username" required autofocus maxlength="40">
                 <br>
                 <label for="inputPassword" class="visually-hidden">パスワード</label>
                 <input type="password" id="inputPassword" class="form-control rounded-pill shadow-lg" placeholder="パスワード" name="password" required maxlength="20">
+                <br>
+                <div class="form-check">
+                    <input class="form-check-input shadow-lg" type="radio" name="gender" id="male" value="男性" style="transform:scale(2.0); background: #2CD8D5;" required>
+                    <label class="form-check-label" for="male">
+                      <b>男性</b>
+                    </label>
+                </div>
+                <br>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="gender" id="female" value="女性" style="transform:scale(2.0); background: #FFBAC3;">
+                    <label class="form-check-label" for="female">
+                      <b>女性</b>
+                    </label>
+                </div>
                 <br>
                 <button class="w-100 btn btn-lg shadow-lg rounded-pill p-1 zoom" type="submit">サインアップ</button>
                 <br><br><br><br>

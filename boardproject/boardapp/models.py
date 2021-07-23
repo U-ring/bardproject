@@ -25,8 +25,8 @@ class Profile(models.Model):
     image4 = models.ImageField(upload_to='')
     image5 = models.ImageField(upload_to='')
     gender = models.CharField(max_length=20, blank=True)
-    birth_date = models.DateField(null=True, blank=True)    
-    age = models.IntegerField(null=True, blank=True, default=1)    
+    birth_date = models.DateField(null=True, blank=True)
+    age = models.IntegerField(null=True, blank=True, default=1)
     location = models.CharField(max_length=30, blank=True)
     introduction_text = models.CharField(max_length=500, blank=True)
 
@@ -39,7 +39,7 @@ def create_user_profile(sender, instance, created, **kwargs):
         instance.profile.image3 = 'noPhoto.png'
         instance.profile.image4 = 'noPhoto.png'
         instance.profile.image5 = 'noPhoto.png'
-        
+
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
