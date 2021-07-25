@@ -86,7 +86,8 @@ class SuccessfulSignUpTests(TestCase):
         url = reverse('signup')
         data = {
             'username': 'saigo',
-            'password': 'saigo'
+            'password': 'saigo',
+            'gender': '男性'
         }
         self.response = self.client.post(url, data)
         self.home_url = reverse('list')
@@ -97,7 +98,8 @@ class SuccessfulSignUpTests(TestCase):
         url = reverse('signup')
         data = {
             'username': 'saigo',
-            'password': 'saigo'
+            'password': 'saigo',
+            'gender': '男性'
         }
         self.response = self.client.post(url, data)
         self.home_url = reverse('list')
@@ -111,7 +113,8 @@ class SuccessfulSignUpTests(TestCase):
         url = reverse('signup')
         data = {
             'username': 'saigo',
-            'password': 'saigo'
+            'password': 'saigo',
+            'gender': '男性'
         }
         self.response = self.client.post(url, data)
         self.home_url = reverse('list')
