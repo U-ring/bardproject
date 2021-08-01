@@ -14,13 +14,13 @@ from django.utils import timezone
 
 # Create your views here.
 
+
 def signupfunc(request):
-    object_list = User.objects.all()    
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
         if '-' in username or User.objects.filter(username=username).exists():
-            return render(request, 'signup.html', {'error':'ユーザーネームに無効な文字が含まれているか、既に存在しているユーザーネームです。'})
+            return render(request, 'signup.html', {'error': 'ユーザーネームに無効な文字が含まれているか、既に存在しているユーザーネームです。'})
         try:
             user = User.objects.create_user(username, '', password)
             user.profile.gender = request.POST['gender']
@@ -46,6 +46,8 @@ def loginfunc(request):
         else:
             return render(request, 'login.html', {"context":"ユーザー名かパスワードを間違えています。"})
     return render(request, 'login.html', {})
+
+
 @login_required
 def listfunc(request):
     # nopeUsers = Nopes.objects.filter(user_id=request.user.id)
@@ -60,66 +62,64 @@ def listfunc(request):
         userGender = "男性"
 
     for user in allUsers:
-        # print(user.profile.gender)
         if user.profile.gender == userGender:
-            if not Likes.objects.filter(user_id=loginUser.id, liked_user_id=user.id).exists() and not Nopes.objects.filter(user_id=loginUser.id ,noped_user_id=user.id).exists() and user.id != loginUser.id:
+            if not Likes.objects.filter(user_id=loginUser.id, liked_user_id=user.id).exists() and not Nopes.objects.filter(user_id=loginUser.id, noped_user_id=user.id).exists() and user.id != loginUser.id:
                 object_list.append(user)
-                print(user.profile.gender)
                 break
 
     likeUsers = Likes.objects.filter(user_id=loginUser.id)
     likedUsers = Likes.objects.filter(liked_user_id=loginUser.id)
-    machingFlag = "false"
-    machingUser = User.objects.get(id=loginUser.id)
+    matchingFlag = "false"
+    matchingUser = User.objects.get(id=loginUser.id)
 
     for item in likeUsers:
         for item2 in likedUsers:
             if item.liked_user_id == item2.user_id:
                 aaaa = datetime.now()
                 if 2 > (aaaa.replace(tzinfo=None)-item.like_date.replace(tzinfo=None)).total_seconds():
-                    machingUser = User.objects.get(id=item.user_id)
-                    machingFlag = "true"
-                    return render(request, 'maching.html', {"machingUser":machingUser})
+                    matchingUser = User.objects.get(id=item.liked_user_id)
+                    matchingFlag = "true"
+                    return render(request, 'matching.html', {"matchingUser": matchingUser})
     if len(object_list) != 0:
         nextUser = object_list[0]
     else:
         nextUser = None
-    # return render(request, 'list.html', {'object_list':object_list,"machingFlag":machingFlag})
-    return render(request, 'list.html', {'object_list':object_list,"machingUser":machingUser, "nextUser":nextUser})
+    return render(request, 'list.html', {'object_list': object_list, "matchingUser": matchingUser, "nextUser": nextUser})
+
 
 def logoutfunc(request):
     logout(request)
     return redirect('login')
 
+
 def detailfunc(request, pk):
     object = get_object_or_404(BoardModel, pk=pk)
-    return render(request, 'detail.html', {'object':object})
+    return render(request, 'detail.html', {'object': object})
+
 
 def goodfunc(request, pk):
-    #object = BoardModel.objects.get_object_or_404(BoardModel, pk=pk)
+    # object = BoardModel.objects.get_object_or_404(BoardModel, pk=pk)
     object = BoardModel.objects.get(pk=pk)
-    #object.good += 1
+    # object.good += 1
     object.good = object.good + 1
     object.save()
     return redirect('list')
 
+
 class BoardCreate(CreateView):
     template_name = 'create.html'
     model = BoardModel
-    fields = ('title','content','author','snsimage')
+    fields = ('title', 'content', 'author', 'snsimage')
     success_url = reverse_lazy('list')
 
-#ここから
+
+# ここから
 @login_required
 def likefunc(request, pk):
-    #object = BoardModel.objects.get_object_or_404(BoardModel, pk=pk)
     like = Likes(user_id=request.user.id, liked_user_id=pk)
-    print(request.user.id)
-    #object.good += 1
-    # object.user_id = request.user.id
-    # object.liked_user_id = pk
     like.save()
     return redirect('list')
+
 
 @login_required
 def nopefunc(request, pk):
@@ -131,31 +131,29 @@ def nopefunc(request, pk):
     nope.save()
     return redirect('list')
 
-@login_required
-def deleteMachingfunc(request):
-    #object = BoardModel.objects.get_object_or_404(BoardModel, pk=pk)
-    print('ログインユーザーidは')
-    print(request.user.id)
-    print('マッチングユーザーidは')
-    print(request.POST['machingUserId'])
-    likeUser = Likes.objects.filter(user_id=request.user.id, liked_user_id=request.POST['machingUserId']).delete()
 
-    return redirect('machinglist')
-
-#ここから
 @login_required
-def machinglistfunc(request):    
+def deleteMatchingfunc(request):
+    Likes.objects.filter(user_id=request.user.id, liked_user_id=request.POST['matchingUserId']).delete()
+
+    return redirect('matchinglist')
+
+
+# ここから
+@login_required
+def matchinglistfunc(request):
     likeUser = Likes.objects.filter(user_id=request.user.id)
     likedUser = Likes.objects.filter(liked_user_id=request.user.id)
-    machingList = []
+    matchingList = []
 
     for item in likeUser:
         for item2 in likedUser:
             if item.liked_user_id == item2.user_id:
 
-                machingList.append(User.objects.get(pk=item.liked_user_id))
+                matchingList.append(User.objects.get(pk=item.liked_user_id))
 
-    return render(request, 'machinglist.html', {'machingList':machingList})
+    return render(request, 'matchinglist.html', {'matchingList': matchingList})
+
 
 @login_required
 def profileEditfunc(request):
@@ -164,7 +162,7 @@ def profileEditfunc(request):
         user = request.user
         if request.POST.get('name').strip() == "":
             return redirect('profileEdit')
-        else:            
+        else:
             user.username = request.POST.get('name')
             print(request.FILES.get('image'))
             profile.image = request.FILES.get('image')
@@ -172,49 +170,44 @@ def profileEditfunc(request):
             user.save()
             profile.save()
             edited = "ユーザー情報を更新しました。"
-            return render(request,'profileEdit.html', {'edited':edited, 'profile':profile})
-            
-    return render(request, 'profileEdit.html', {'profile':profile})
+            return render(request, 'profileEdit.html', {'edited': edited, 'profile': profile})
+
+    return render(request, 'profileEdit.html', {'profile': profile})
 
 
 class profileUpdate(UpdateView):
     template_name = 'updateProfile.html'
     model = Profile
-    fields = ('image','image2','image3','image4','image5','introduction_text')
+    fields = ('image', 'image2', 'image3', 'image4', 'image5', 'introduction_text')
 
     def get_success_url(self):
-        return reverse('update',kwargs={'pk': self.object.pk})
+        return reverse('update', kwargs={'pk': self.object.pk})
+
 
 @login_required
-def chat( request ):
-    #kaneko-tanakaかtanaka-kanekoになってしまうので、後で一意にする処理追加。また、usernameは一意にしてハイフンはダメにする
-    # room = request.POST['talkTo'] + "-" + request.user.username
-    if request.POST.get('talkToId') == None:
-        return redirect('machinglist')
-    print("def chatです")
-    print(request.POST.get('talkToId'))
-    print("def chatです2")
+def chat(request):
+    # kaneko-tanakaかtanaka-kanekoになってしまうので、後で一意にする処理追加。また、usernameは一意にしてハイフンはダメにする
+    if request.POST.get('talkToId') is None:
+        return redirect('matchinglist')
     myId = str(request.user.pk)
     talkToId = str(request.POST['talkToId'])
-    
+
     # talkToId = str(request.POST.get('talkToId'))
     room = "str"
     if myId < talkToId:
         room = myId + "T" + talkToId
     else:
         room = talkToId + "T" + myId
-    
+
     messages = []
     for dbMessage in Messages.objects.filter(room_name=room):
         # print(type(dbMessage.send_date))
-        if dbMessage.user_id==request.user.id:
-            messageDictionary = {"username":request.user.username,"message":dbMessage.message,"date":str(dbMessage.send_date.strftime( '%Y/%m/%d %H:%M' ))}
+        if dbMessage.user_id == request.user.id:
+            messageDictionary = {"username": request.user.username, "message": dbMessage.message, "date": str(dbMessage.send_date.strftime('%Y/%m/%d %H:%M'))}
             # messageDictionary = {"username":request.user.username,"message":dbMessage.message}
             messages.append(messageDictionary)
         else:
-            messageDictionary1 = {"username":User.objects.get(id=talkToId).username,"message":dbMessage.message,"date":str(dbMessage.send_date.strftime( '%Y/%m/%d %H:%M' ))}
+            messageDictionary1 = {"username":User.objects.get(id=talkToId).username, "message": dbMessage.message, "date": str(dbMessage.send_date.strftime('%Y/%m/%d %H:%M'))}
             # messageDictionary1 = {"username":User.objects.get(id=talkToId).username,"message":dbMessage.message}
             messages.append(messageDictionary1)
-    return render( request, 'chat.html', {'room':room, 'talkTo':User.objects.get(id=talkToId),'user':request.user,'messages':messages})
-
-  
+    return render(request, 'chat.html', {'room': room, 'talkTo': User.objects.get(id=talkToId), 'user': request.user, 'messages': messages})

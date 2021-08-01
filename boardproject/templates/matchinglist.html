@@ -19,7 +19,7 @@
 </div>
 
 <div class="container">
-{% for item in machingList %}
+{% for item in matchingList %}
 <br>
 <div class="shadow-lg rounded-pill p-4">
     <!--<p>ユーザー名:<a href="{% url 'detail' item.pk %}">{{ item.title }}</a></p>-->
@@ -41,8 +41,8 @@
                 <i class="far fa-comments fa-2x shadow rounded-circle p-2"></i>
             </button>
         </form>
-        <form action="{% url 'deleteMaching' %}" method="post">{% csrf_token %}
-            <input type="hidden" name="machingUserId" value="{{item.id}}">
+        <form action="{% url 'deleteMatching' %}" method="post">{% csrf_token %}
+            <input type="hidden" name="matchingUserId" value="{{item.id}}">
             <button type="submit" class="rounded-circle shadow-sm p-2 assimilation fade2" style="border: none; outline: none" onMouseOut="this.style.background='linear-gradient(-225deg, #2CD8D5 0%, #C5C1FF 56%, #FFBAC3 100%)'" onMouseOver="this.style.background='rgba(255, 255, 255, .2)'">
                 <i class="far fa-trash-alt fa-2x shadow rounded-circle p-2"></i>
             </button>
