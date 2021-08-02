@@ -275,6 +275,7 @@ class LikeTests(TestCase):
         Likes.objects.all().delete()
 
 
+# 「/list/」におけるユーザーNope（興味なし）ボタンに関するテストクラス。
 class NopeTests(TestCase):
     def setUp(self):
         user = User.objects.create_user('saigo', '', 'saigo')
@@ -336,10 +337,6 @@ class MatchingListTest(TestCase):
 
     # 「/matchinglist/」への正常なアクセスが可能であることをテストするメソッド。
     def test_matchingList_status_code(self):
-        # user = User.objects.create_user('saigo', '', 'saigo')
-        # user.profile.gender = '男性'
-        # user.profile.save()
-
         url = reverse('login')
         data = {
             'username': 'saigo',
@@ -354,18 +351,6 @@ class MatchingListTest(TestCase):
 
     # 「/matchinglist/」に表示されるユーザーが、マッチングしたユーザーであることをテストするメソッド。
     def test_matchinglist_display(self):
-        # user = User.objects.create_user('saigo', '', 'saigo')
-        # user.profile.gender = '男性'
-        # user.profile.save()
-
-        # user2 = User.objects.create_user('sato', '', 'sato')
-        # user2.profile.gender = '女性'
-        # user2.profile.save()
-
-        # user3 = User.objects.create_user('suzuki', '', 'suzuki')
-        # user3.profile.gender = '女性'
-        # user3.profile.save()
-
         like = Likes(user_id=1, liked_user_id=2)
         like.save()
         like = Likes(user_id=2, liked_user_id=1)
@@ -464,6 +449,24 @@ class ChatContextTest(TestCase):
         like.save()
         like = Likes(user_id=2, liked_user_id=1)
         like.save()
+
+    # チャットルームである「/」に対して正常にアクセスできているかテストするメソッド。
+    def test_status_code(self):
+
+        url = reverse('login')
+        data = {
+            'username': 'saigo',
+            'password': 'saigo'
+        }
+
+        self.response = self.client.post(url, data)
+
+        data = {
+            'talkToId': 2
+        }
+        url = reverse('chat')
+        self.response = self.client.post(url, data)
+        self.assertEqual(self.response.status_code, 200)
 
     # chatのルーム名を一意かつ正しく「/」に対してパラメータとして渡せているかテストするメソッド。Tはuser_idの区切り文字である。
     def test_roomname(self):
@@ -597,10 +600,6 @@ class MessageTest(TestCase):
         like = Likes(user_id=2, liked_user_id=1)
         like.save()
 
-    @sync_to_async
-    def get_all_likes():
-        return Likes.objects.all().count()
-
     # Websocket通信として接続・切断できるかをテストするメソッド
     async def test_connect_websocket(self):
 
@@ -653,9 +652,15 @@ class MessageTest(TestCase):
             print('args:' + str(e.args))
             print('e自身:' + str(e))
 
-        # sem = asyncio.Semaphore(200)
-
         await communicator.disconnect()
+
+    # messageが保存されているかテストするメソッド。
+    async def test_save_message(self):
+        self.assertEquals(await self.message_count(), 0)
+
+        await ChatConsumer._save_message("1T2", "1", "2", "testMessage")
+
+        self.assertEquals(await self.message_count(), 1)
 
     @sync_to_async
     def message_count(cls):
