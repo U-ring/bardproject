@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import signupfunc, loginfunc, listfunc, logoutfunc, detailfunc, goodfunc, BoardCreate , profileUpdate, likefunc, nopefunc, matchinglistfunc, profileEditfunc, chat, deleteMatchingfunc
+from .views import signupfunc, loginfunc, listfunc, logoutfunc, detailfunc, goodfunc, BoardCreate , profileUpdate, likefunc, nopefunc, matchinglistfunc, chat, deleteMatchingfunc
 from django.urls import include
 
 urlpatterns = [
@@ -14,7 +14,6 @@ urlpatterns = [
     path('nope/<int:pk>', nopefunc, name='nope'),
     path('matchinglist/', matchinglistfunc, name='matchinglist'),
     path('delete/', deleteMatchingfunc, name='deleteMatching'),
-    path('profileEdit/', profileEditfunc, name='profileEdit'),
     path('<int:pk>/update/', profileUpdate.as_view(), name='update'),
     path('', chat, name='chat'),
 ]

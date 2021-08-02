@@ -1,5 +1,6 @@
 from django.http import request, response
 from django.test import TestCase
+import unittest
 from django.urls import reverse, resolve
 from boardapp.views import signupfunc, loginfunc
 from ..models import User, Likes, Nopes, Messages
@@ -269,6 +270,24 @@ class LikeTests(TestCase):
         likeurl = reverse('like', kwargs={'pk': beforeLikeResponse.context['nextUser'].id})
         self.response = self.client.post(likeurl)
         self.assertRedirects(self.response, self.home_url, status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
+
+    # likeクリックによるマッチング発生時、マッチング通知画面に遷移するかテストするメソッド。
+    def test_matching_redirect(self):
+        like = Likes(user_id=2, liked_user_id=1)
+        like.save()
+        url = reverse('login')
+        data = {
+            'username': 'saigo',
+            'password': 'saigo'
+        }
+        self.response = self.client.post(url, data)
+        self.home_url = reverse('list')
+
+        likeurl = reverse('like', kwargs={'pk': 2})
+        self.response = self.client.post(likeurl)
+        response = self.client.get(self.home_url)
+
+        self.assertTemplateUsed(response, 'matching.html')
 
     def tearDown(self):
         User.objects.all().delete()
