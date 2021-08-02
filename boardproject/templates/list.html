@@ -74,14 +74,18 @@
     <button type="button" class="rounded-circle shadow-sm p-2 assimilation" onclick="location.href='{% url 'nope' nextUser.pk %}'" style="border: none; outline: none; background: #FFBAC3;" onMouseOut="this.style.background='#FFBAC3'" onMouseOver="this.style.background='rgba(255, 255, 255, .2)'">
         <i class="far fa-grin-beam-sweat nope fa-3x shadow rounded-circle p-2" style="color: #2CD8D5;"></i>
         </button>
-    <h1>{{ nextUser.username }}</h1>
+        <h1>{{ nextUser.username }}</h1>
     <button type="button" class="rounded-circle shadow-sm p-2 assimilation" onclick="location.href='{% url 'like' nextUser.pk %}'" style="border: none; outline: none; background: #2CD8D5;" onMouseOut="this.style.background='#2CD8D5'" onMouseOver="this.style.background='rgba(255, 255, 255, .2)'">
         <i class="far fa-grin-hearts like fa-3x shadow rounded-circle p-2" style="color:#FFBAC3"></i>
         </button>
   </div>
-    
+  <div class="row text-center">
+    <h3>{{ nextUser.profile.age }}歳</h3>
+  </div>
     <br><br>
+    <div class="row text-center">
     <h3>{{ nextUser.profile.introduction_text }}</h3>
+    </div>
 </div>
 {% else %}
 <br><br><br><br><br><br><br><br><br>

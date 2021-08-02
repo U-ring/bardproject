@@ -10,7 +10,9 @@ import async_timeout
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.testing import HttpCommunicator, WebsocketCommunicator
 from boardapp.consumers import ChatConsumer
+from datetime import date
 import datetime
+from dateutil.relativedelta import relativedelta
 import sqlite3 
 import traceback
 import json
@@ -105,7 +107,8 @@ class SuccessfulSignUpTests(TestCase):
         data = {
             'username': 'saigo',
             'password': 'saigo',
-            'gender': '男性'
+            'gender': '男性',
+            'birth_date': '1990-01-01'
         }
         self.response = self.client.post(url, data)
         self.home_url = reverse('list')
@@ -117,7 +120,8 @@ class SuccessfulSignUpTests(TestCase):
         data = {
             'username': 'saigo',
             'password': 'saigo',
-            'gender': '男性'
+            'gender': '男性',
+            'birth_date': '1990-01-01'
         }
         self.response = self.client.post(url, data)
         self.home_url = reverse('list')
@@ -131,7 +135,8 @@ class SuccessfulSignUpTests(TestCase):
         data = {
             'username': 'saigo',
             'password': 'saigo',
-            'gender': '男性'
+            'gender': '男性',
+            'birth_date': '1990-01-01'
         }
         self.response = self.client.post(url, data)
         self.home_url = reverse('list')
@@ -189,14 +194,17 @@ class listTests(TestCase):
     def setUp(self):
         user = User.objects.create_user('saigo', '', 'saigo')
         user.profile.gender = '男性'
+        user.profile.birth_date = '1990-01-01'
         user.profile.save()
 
         user2 = User.objects.create_user('suzuki', '', 'suzuki')
         user2.profile.gender = '男性'
+        user.profile.birth_date = '1990-01-01'
         user2.profile.save()
 
         user3 = User.objects.create_user('sato', '', 'sato')
         user3.profile.gender = '女性'
+        user.profile.birth_date = '1990-01-01'
         user3.profile.save()
 
     # /list/において異性が表示されることをテストするメソッド
@@ -226,6 +234,20 @@ class listTests(TestCase):
         self.response = self.client.post(likeurl)
         afterLikeResponse = self.client.get(self.home_url)
         self.assertEqual(afterLikeResponse.context['nextUser'], None)
+
+    # 異性表示画面である「/list/」において、誕生日から表示ユーザーの年齢を計算・保存するメソッドが正しく動作しているかテストするメソッド。
+    def test_save_age(self):
+        url = reverse('login')
+        data = {
+            'username': 'saigo',
+            'password': 'saigo'
+        }
+        self.response = self.client.post(url, data)
+        self.home_url = reverse('list')
+        beforeLikeResponse = self.client.get(self.home_url)
+        d1 = date.today()
+        
+        self.assertEqual(beforeLikeResponse.context['nextUser'].profile.age, relativedelta(d1, beforeLikeResponse.context['nextUser'].profile.birth_date).years)
 
     def tearDown(self):
         User.objects.all().delete()

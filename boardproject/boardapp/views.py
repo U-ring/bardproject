@@ -24,6 +24,7 @@ def signupfunc(request):
         try:
             user = User.objects.create_user(username, '', password)
             user.profile.gender = request.POST['gender']
+            user.profile.birth_date = request.POST['birth_date']
             user.profile.save()
             login(request, user)
 
@@ -50,27 +51,13 @@ def loginfunc(request):
 
 @login_required
 def listfunc(request):
-    # object_list = []
     loginUser = request.user
 
-    # likeUsers = Likes.objects.filter(user_id=loginUser.id)
-    # likedUsers = Likes.objects.filter(liked_user_id=loginUser.id)
-    # matchingFlag = "false"
-    # matchingUser = User.objects.get(id=loginUser.id)
-
-    # for item in likeUsers:
-    #     for item2 in likedUsers:
-    #         if item.liked_user_id == item2.user_id:
-    #             aaaa = datetime.now()
-    #             if 2 > (aaaa.replace(tzinfo=None)-item.like_date.replace(tzinfo=None)).total_seconds():
-    #                 matchingUser = User.objects.get(id=item.liked_user_id)
-    #                 return render(request, 'matching.html', {"matchingUser": matchingUser})
     matchingUser = Likes.judgeMatching(loginUser)
-    if matchingUser is None:
+    if matchingUser is not None:
         return render(request, 'matching.html', {"matchingUser": matchingUser})
-    # print(Likes.judgeMatching(loginUser))
 
-    return render(request, 'list.html', {"nextUser": GetUser.getMatchingUser(loginUser)})
+    return render(request, 'list.html', {"nextUser": GetUser.getHeterosexual(loginUser)})
 
 
 def logoutfunc(request):
@@ -125,17 +112,8 @@ def deleteMatchingfunc(request):
 # ここから
 @login_required
 def matchinglistfunc(request):
-    likeUser = Likes.objects.filter(user_id=request.user.id)
-    likedUser = Likes.objects.filter(liked_user_id=request.user.id)
-    matchingList = []
 
-    for item in likeUser:
-        for item2 in likedUser:
-            if item.liked_user_id == item2.user_id:
-
-                matchingList.append(User.objects.get(pk=item.liked_user_id))
-
-    return render(request, 'matchinglist.html', {'matchingList': matchingList})
+    return render(request, 'matchinglist.html', {'matchingList': Likes.getMatchingUser(request.user)})
 
 
 class profileUpdate(UpdateView):

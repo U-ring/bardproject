@@ -5,7 +5,8 @@ from django.dispatch import receiver
 from datetime import date
 import math
 from django.utils import timezone
-from datetime import datetime
+from datetime import date, datetime
+from dateutil.relativedelta import relativedelta
 
 # Create your models here.
 
@@ -66,6 +67,17 @@ class Likes(models.Model):
                         matchingUser = User.objects.get(id=item.liked_user_id)
                         return matchingUser
 
+    def getMatchingUser(loginUser):
+        likeUser = Likes.objects.filter(user_id=loginUser.id)
+        likedUser = Likes.objects.filter(liked_user_id=loginUser.id)
+        matchingList = []
+
+        for item in likeUser:
+            for item2 in likedUser:
+                if item.liked_user_id == item2.user_id:
+                    matchingList.append(User.objects.get(pk=item.liked_user_id))
+        return matchingList
+
 class Nopes(models.Model):
     user_id = models.IntegerField()
     noped_user_id = models.IntegerField()
@@ -94,7 +106,7 @@ class Messages(models.Model):
 
 
 class GetUser():
-    def getMatchingUser(loginUser):
+    def getHeterosexual(loginUser):
         object_list = []
         allUsers = User.objects.all()
 
@@ -107,6 +119,9 @@ class GetUser():
         for user in allUsers:
             if user.profile.gender == userGender:
                 if not Likes.objects.filter(user_id=loginUser.id, liked_user_id=user.id).exists() and not Nopes.objects.filter(user_id=loginUser.id, noped_user_id=user.id).exists() and user.id != loginUser.id:
+                    d1 = date.today()
+                    user.profile.age = relativedelta(d1, user.profile.birth_date).years
+                    user.save()
                     object_list.append(user)
                     break
         if len(object_list) != 0:

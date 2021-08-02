@@ -41,6 +41,14 @@
     border-top-right-radius: 0;
     }
 
+    .form-signin input[type="date"] {
+      margin-bottom: 10px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      /* border: none; */
+      outline: none;
+      }
+
     input[type=submit] {
         font-family: FontAwesome;
       }

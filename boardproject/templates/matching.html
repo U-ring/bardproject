@@ -59,7 +59,7 @@ h1 {
             <a href="{% url 'matchinglist' %}" class="nav-link active">マッチングリストへ</a>
           </li>
           <li class="nav-item">
-            <!--<a href="{% url 'profileEdit' %}" class="nav-link active">プロフィール更新画面へ</a>-->
+
             <a href="{% url 'update' request.user.pk%}" class="nav-link active">プロフィール更新画面へ</a>
           </li>
           <li class="nav-item">
@@ -78,7 +78,7 @@ h1 {
 <br>
 <div class="text-center rounded" style="height: 100%; width: 100%;">
     <br>
-    <h1 class="fade" style="color: #f2f2f2;">{{machingUser.username}}さんとマッチングしました。お話しましょう！</h1>
+    <h1 class="fade" style="color: #f2f2f2;">{{matchingUser.username}}さんとマッチングしました。お話しましょう！</h1>
     
     <br><br><br><br>
     <div id="carouselExampleIndicators" class="carousel slide fade" data-bs-ride="carousel">
@@ -92,7 +92,7 @@ h1 {
             <div class="carousel-item active">
                 <label class="w-100">
                     <span class="w-100">
-                        <img class="d-block mx-auto rounded shadow-lg" src="/medi/{{ machingUser.profile.image2 }}"
+                        <img class="d-block mx-auto rounded shadow-lg" src="/medi/{{ matchingUser.profile.image2 }}"
                             style="height: 250px; width: 500px;">
                     </span>
                     <br><br>
@@ -101,7 +101,7 @@ h1 {
             <div class="carousel-item">
                 <label class="w-100">
                     <span class="w-100">
-                        <img class="d-block mx-auto rounded shadow" src="/medi/{{ machingUser.profile.image3 }}"
+                        <img class="d-block mx-auto rounded shadow" src="/medi/{{ matchingUser.profile.image3 }}"
                             style="height: 250px; width: 500px;">
                     </span>
                     <br><br>
@@ -110,7 +110,7 @@ h1 {
             <div class="carousel-item">
                 <label class="w-100">
                     <span class="w-100">
-                        <img class="d-block mx-auto rounded shadow" src="/medi/{{ machingUser.profile.image4 }}"
+                        <img class="d-block mx-auto rounded shadow" src="/medi/{{ matchingUser.profile.image4 }}"
                             style="height: 250px; width: 500px;">
                     </span>
                     <br><br>
@@ -119,7 +119,7 @@ h1 {
             <div class="carousel-item">
                 <label class="w-100">
                     <span class="w-100">
-                        <img class="d-block mx-auto rounded shadow" src="/medi/{{ machingUser.profile.image5 }}"
+                        <img class="d-block mx-auto rounded shadow" src="/medi/{{ matchingUser.profile.image5 }}"
                             style="height: 250px; width: 500px;">
                     </span>
                     <br><br>
@@ -142,7 +142,7 @@ h1 {
         <i class="fas fa-backspace fa-4x shadow rounded-circle p-2" style="color: #f2f2f2;"></i>
         </button>
         <form action="{% url 'chat' %}" method="post">{% csrf_token %}            
-            <input type="hidden" name="talkToId" value="{{machingUser.id}}">
+            <input type="hidden" name="talkToId" value="{{matchingUser.id}}">
             <button type="submit" class="rounded-circle shadow-sm p-2 assimilation" style="border: none; outline: none ; background: linear-gradient(-225deg, #2CD8D5 0%, #C5C1FF 56%, #FFBAC3 100%);" onMouseOut="this.style.background='linear-gradient(-225deg, #2CD8D5 0%, #C5C1FF 56%, #FFBAC3 100%)'" onMouseOver="this.style.background='rgba(255, 255, 255, .2)'">
                 <i class="fas fa-comments chat fa-4x shadow rounded-circle p-2" style="color: #FFBAC3;"></i>
             </button>            
